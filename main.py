@@ -14,7 +14,6 @@ We use `PyTorch Lightning` (wrapping `PyTorch`) as our main framework and `wandb
 """
 
 # import Libraries
-import os
 
 # torch imports
 import torch
@@ -22,18 +21,11 @@ import torch.nn as nn
 from torch.optim import Adam
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader, random_split
+import torchvision
 from torchvision import transforms
-from pl_bolts.datamodules import CIFAR10DataModule
-from pl_bolts.transforms.dataset_normalizations import cifar10_normalization
-from pytorch_lightning import LightningModule, Trainer, seed_everything
-from pytorch_lightning.callbacks import LearningRateMonitor
-from pytorch_lightning.loggers import TensorBoardLogger
-from torch.optim.lr_scheduler import OneCycleLR
-from torch.optim.swa_utils import AveragedModel, update_bn
-from torchmetrics.functional import accuracy
+from torchvision.datasets import CIFAR10
 import torch.nn.functional as F
 import torchmetrics
-import torchvision
 
 # pl imports
 import pytorch_lightning as pl
@@ -42,33 +34,25 @@ from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 
-# pondernet model
-from pondernet import *
-
 # remaining imports
 import wandb
 from math import floor
 
 # set seeds
-seed_everything(7)
+seed_everything(1234)
 
 # log in to wandb
 wandb.login()
+
 
 """# Constants and hyeperparameters
 
 We define the hyperparameters for our experiments. The choices for the underlying CNN are taken from the linked MNIST tutorial, and similarly with the PonderNet hyperparameters. 
 """
 
-PATH_DATASETS = os.environ.get("PATH_DATASETS", ".")
-
 # TRAINER SETTINGS
-AVAIL_GPUS = torch.cuda.device_count()
-BATCH_SIZE = 128 if AVAIL_GPUS else 64
-NUM_WORKERS = int(os.cpu_count() / 2)
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-EPOCHS = 5    # change 20 - 40
+BATCH_SIZE = 128
+EPOCHS = 20
 
 # OPTIMIZER SETTINGS
 LR = 0.001
@@ -76,61 +60,136 @@ GRAD_NORM_CLIP = 0.5
 
 # MODEL HPARAMS
 N_ELEMS = 512
-N_HIDDEN = 100
+N_HIDDEN = 64
+#KERNEL_SIZE = 5
 
-KERNEL_SIZE = 5
-
-MAX_STEPS = 20    # decrease this
-LAMBDA_P = 0.2    # change to get 91%
+MAX_STEPS = 20
+LAMBDA_P = 0.5
 BETA = 0.01
 
 """# CIFAR10
 
 """
 
-train_transforms = torchvision.transforms.Compose(
-    [
-        torchvision.transforms.RandomCrop(32, padding=4),
-        torchvision.transforms.RandomHorizontalFlip(),
-        torchvision.transforms.ToTensor(),
-        cifar10_normalization(),
-    ]
-)
+train_transforms = transforms.Compose([
+    transforms.RandomCrop(32, padding=4),
+    transforms.RandomHorizontalFlip(),
+    transforms.ToTensor(),
+    #transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+])
 
-test_transforms = torchvision.transforms.Compose(
-    [
-        torchvision.transforms.ToTensor(),
-        cifar10_normalization(),
-    ]
-)
+test_transforms = transforms.Compose([
+    transforms.ToTensor(),
+    #transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+])
+
+class CIFAR10_DataModule(pl.LightningDataModule):
+    '''
+        DataModule to hold the CIFAR10 dataset. Accepts different transforms for train and test to
+        allow for extrapolation experiments.
+
+        Parameters
+        ----------
+        data_dir : str
+            Directory where CIFAR10 will be downloaded or taken from.
+
+        train_transform : [transform] 
+            List of transformations for the training dataset. The same
+            transformations are also applied to the validation dataset.
+
+        test_transform : [transform] or [[transform]]
+            List of transformations for the test dataset. Also accepts a list of
+            lists to validate on multiple datasets with different transforms.
+
+        batch_size : int
+            Batch size for both all dataloaders.
+    '''
+
+    def __init__(self, data_dir='./', train_transform=None, test_transform=None, batch_size=256):
+        super().__init__()
+        self.data_dir = data_dir
+        self.batch_size = batch_size
+        self.train_transform = train_transform
+        self.test_transform = test_transform
+
+        self.default_transform = transforms.Compose(
+            [
+                transforms.ToTensor(),
+                transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+            ]
+        )
+
+    def prepare_data(self):
+        '''called only once and on 1 GPU'''
+        # download data (train/val and test sets)
+        CIFAR10(self.data_dir, train=True, download=True)
+        CIFAR10(self.data_dir, train=False, download=True)
+
+    def setup(self, stage=None):
+        '''
+            Called on each GPU separately - stage defines if we are
+            at fit, validate, test or predict step.
+        '''
+        # we set up only relevant datasets when stage is specified
+        if stage in [None, 'fit', 'validate']:
+            cifar_full = CIFAR10(self.data_dir, train=True,
+                                transform=(self.train_transform or self.default_transform))
+            self.cifar_train, self.cifar_val = random_split(cifar_full, [45000, 5000])
+        if stage == 'test' or stage is None:
+            if self.test_transform is None or isinstance(self.test_transform, transforms.Compose):
+                self.cifar_test = CIFAR10(self.data_dir,
+                                        train=False,
+                                        transform=(self.test_transform or self.default_transform))
+            else:
+                self.cifar_test = [CIFAR10(self.data_dir,
+                                         train=False,
+                                         transform=test_transform)
+                                   for test_transform in self.test_transform]
+
+    def train_dataloader(self):
+        '''returns training dataloader'''
+        cifar_train = DataLoader(self.cifar_train, batch_size=self.batch_size, shuffle=True)
+        return cifar_train
+
+    def val_dataloader(self):
+        '''returns validation dataloader'''
+        cifar_val = DataLoader(self.cifar_val, batch_size=self.batch_size)
+        return cifar_val
+
+    def test_dataloader(self):
+        '''returns test dataloader(s)'''
+        if isinstance(self.cifar_test, CIFAR10):
+            return DataLoader(self.cifar_test, batch_size=self.batch_size)
+
+        cifar_test = [DataLoader(test_dataset,
+                                 batch_size=self.batch_size)
+                      for test_dataset in self.cifar_test]
+        return cifar_test
 
 """# Run interpolation
 
 Load the MNIST dataset with no rotations and train PonderNet on it. Make sure to edit the `WandbLogger` call so that you log the experiment on your account's desired project.
 """
-
-cifar10_dm = CIFAR10DataModule(
-    data_dir=PATH_DATASETS,
-    batch_size=BATCH_SIZE,
-    num_workers=NUM_WORKERS,
-    train_transforms=train_transforms,
-    test_transforms=test_transforms,
-    val_transforms=test_transforms,
-)
-
 # initialize datamodule and model
-model = PonderCIFAR(n_elems     = N_ELEMS,
-                    n_hidden    = N_HIDDEN,
-                    max_steps   = MAX_STEPS,
-                    lambda_p    = LAMBDA_P,
-                    beta        = BETA,
-                    lr          = LR)
+cifar10_dm = CIFAR10_DataModule(data_dir='./',
+                                train_transform=train_transforms,
+                                test_transform=test_transforms,
+                                batch_size=128,
+                               )
+
+model = PonderCIFAR(n_elems=N_ELEMS,
+                    n_hidden=N_HIDDEN,                    
+                    max_steps=MAX_STEPS,
+                    lambda_p=LAMBDA_P,
+                    beta=BETA,
+                    lr=LR)
 
 # setup logger
-logger = WandbLogger(project='PonderNet', name='interpolation', offline=False)
+logger = WandbLogger(project='PonderNet - CIFAR10', name='interpolation', offline=False)
 logger.watch(model)
 
 trainer = Trainer(
+    logger=logger,                      # W&B integration
     gpus=-1,                            # use all available GPU's
     max_epochs=EPOCHS,                  # maximum number of epochs
     gradient_clip_val=GRAD_NORM_CLIP,   # gradient clipping
