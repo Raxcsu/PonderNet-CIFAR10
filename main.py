@@ -34,6 +34,8 @@ from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 
+from pondernet import *
+
 # remaining imports
 import wandb
 from math import floor
@@ -105,7 +107,7 @@ class CIFAR10_DataModule(pl.LightningDataModule):
             Batch size for both all dataloaders.
     '''
 
-    def __init__(self, data_dir='./', train_transform=None, test_transform=None, batch_size=256):
+    def __init__(self, data_dir='./', train_transform=None, test_transform=None, batch_size=128):
         super().__init__()
         self.data_dir = data_dir
         self.batch_size = batch_size
@@ -172,13 +174,13 @@ Load the MNIST dataset with no rotations and train PonderNet on it. Make sure to
 """
 # initialize datamodule and model
 cifar10_dm = CIFAR10_DataModule(data_dir='./',
-                                train_transform=train_transforms,
-                                test_transform=test_transforms,
+                                train_transform=None,
+                                test_transform=None,
                                 batch_size=128,
                                )
 
 model = PonderCIFAR(n_elems=N_ELEMS,
-                    n_hidden=N_HIDDEN,                    
+                    n_hidden=N_HIDDEN,
                     max_steps=MAX_STEPS,
                     lambda_p=LAMBDA_P,
                     beta=BETA,
