@@ -106,13 +106,13 @@ logger = WandbLogger(project='PonderNet - CIFAR10', name='interpolation', offlin
 logger.watch(model)
 
 trainer = Trainer(
-    loggers            = logger,            # W&B integration
-    gpus               = -1,                # use all available GPU's
-    max_epochs         = EPOCHS,            # maximum number of epochs
-    gradient_clip_val  = GRAD_NORM_CLIP,    # gradient clipping
-    val_check_interval = 0.25,              # validate 4 times per epoch
-    precision          = 16,                # train in half precision
-    deterministic      = True)              # for reproducibility
+    logger=logger,                      # W&B integration
+    gpus=-1,                            # use all available GPU's
+    max_epochs=EPOCHS,                  # maximum number of epochs
+    gradient_clip_val=GRAD_NORM_CLIP,   # gradient clipping
+    val_check_interval=0.25,            # validate 4 times per epoch
+    precision=16,                       # train in half precision
+    deterministic=True)                 # for reproducibility
 
 # fit the model
 trainer.fit(model, datamodule=cifar10_dm)
