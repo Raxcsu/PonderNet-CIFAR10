@@ -12,8 +12,12 @@ I'm playing with [PyTorch](http://pytorch.org/) on the CIFAR10 dataset.
 
 ### Training
 ```
-# Start training with: 
-python main.py
+# Start training INTERPOLATION TASK with: 
+python interpolation.py
+```
+```
+# Start training EXTRAPOLATION TASK with: 
+python extrapolation.py
 ```
 
 ### Accuracy
