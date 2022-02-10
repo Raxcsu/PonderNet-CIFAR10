@@ -17,7 +17,9 @@ python main.py
 ```
 
 ### Accuracy
+INTERPOLATION TASK
 | Model             | Acc.        |
 | ----------------- | ----------- |
 | [ResNet18](https://arxiv.org/abs/1512.03385)          | 93.02%      |
-
+| ResNet18 + PonderNet (epochs=10)          | 83.24%      |
+| ResNet18 + PonderNet (epochs=50)          | 90.96%      |
