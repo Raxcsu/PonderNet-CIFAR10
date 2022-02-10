@@ -1,18 +1,12 @@
-"""# PonderNet implementation
+# //////////////////////////////////////////////
+# ////////// PONDERNET IMPLEMENTATION //////////
+# //////////////////////////////////////////////
 
-## Auxiliary networks
 
-The following section contains code that implements our particular version of PonderNet. For convenience, we define two small networks that will be used within PonderNet, a CNN and a multi-layer perceptron.
-"""
+# ==============================================
+# SETUP AND IMPORTS
+# ==============================================
 
-'''ResNet in PyTorch.
-
-For Pre-activation ResNet, see 'preact_resnet.py'.
-
-Reference:
-[1] Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun
-    Deep Residual Learning for Image Recognition. arXiv:1512.03385
-'''
 # import Libraries
 import os
 
@@ -36,11 +30,25 @@ from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 
 from pondernet import *
+from cifar10data import *
 
 # remaining imports
 import wandb
 from math import floor
 
+# ==============================================
+# AUXILIARY NETWORKS
+# ==============================================
+
+# ----------------------------------------------
+# ------------- ResNet in PyTorch --------------
+
+# For Pre-activation ResNet, see 'preact_resnet.py'.
+
+# Reference:
+# [1] Kaiming He, Xiangyu Zhang, Shaoqing Ren, Jian Sun
+# Deep Residual Learning for Image Recognition. arXiv:1512.03385
+# ----------------------------------------------
 
 class BasicBlock(nn.Module):
     expansion = 1
@@ -133,12 +141,13 @@ def test():
     y = net(torch.randn(1, 3, 32, 32))
     print(y.size())
 
-# test()
 
-"""## Loss
+# ----------------------------------------------
+# ----------------- Total loss -----------------
 
-Here we define the two terms in the loss, namely the reconstruction term and the regularization term. We create a class to wrap them.
-"""
+# Here we define the two terms in the loss, namely the reconstruction
+# term and the regularization term. We create a class to wrap them.
+# ----------------------------------------------
 
 class ReconstructionLoss(nn.Module):
     '''
@@ -263,10 +272,17 @@ class Loss:
         '''returns the total loss'''
         return self.rec_loss + self.beta * self.reg_loss
 
-"""## PonderNet
 
-Finally, we have PonderNet. We use a `PyTorch Lichtning` module, which allows us to control all the aspects of training, validation and testing in the same class. Of special importance is the forward pass; for the sake of simplicity, we decided to implement a hardcoded maximum number of steps approach instead of a threshold on the cumulative probability of halting.
-"""
+# ==============================================
+# PONDERNET
+# ==============================================
+
+# Finally, we have PonderNet. We use a `PyTorch Lichtning` module,
+# which allows us to control all the aspects of training, validation
+# and testing in the same class. Of special importance is the forward
+# pass; for the sake of simplicity, we decided to implement a hardcoded
+# maximum number of steps approach instead of a threshold on the
+# cumulative probability of halting.
 
 class PonderCIFAR(pl.LightningModule):
     '''
