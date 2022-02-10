@@ -34,7 +34,7 @@ from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 
 from pondernet import *
-from cifar10data import *
+from cifar10data import CIFAR10_DataModule
 
 # remaining imports
 import wandb
@@ -91,8 +91,7 @@ test_transforms = transforms.Compose([
 cifar10_dm = CIFAR10_DataModule(data_dir        = './',
                                 train_transform = train_transforms,
                                 test_transform  = test_transforms,
-                                batch_size      = 128,
-                               )
+                                batch_size      = 128)
 
 model = PonderCIFAR(n_elems   = N_ELEMS,
                     n_hidden  = N_HIDDEN,
