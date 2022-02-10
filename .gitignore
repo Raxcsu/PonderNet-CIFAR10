@@ -1,6 +1,5 @@
-'PonderNet - CIFAR10'/
-cifar-10-batches-py/
+'PonderNet - CIFAR10'/*
+cifar-10-batches-py/*
 cifar-10-python.tar.gz
-lightning_logs/
-wandb/
-main.py.save
+lightning_logs/*
+wandb/*
