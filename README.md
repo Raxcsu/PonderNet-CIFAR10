@@ -1,5 +1,7 @@
 # RESNET18 + PonderNet
 
+This code is adopted from one of the [PyTorch Lightning examples](https://colab.research.google.com/drive/1Tr9dYlwBKk6-LgLKGO8KYZULnguVA992?usp=sharing#scrollTo=CxXtBfFrKYgA) and [this PonderNet implementation](https://nn.labml.ai/adaptive_computation/ponder_net/index.html).
+
 ## Train CIFAR10 with PyTorch
 
 I'm playing with [PyTorch](http://pytorch.org/) on the CIFAR10 dataset.
