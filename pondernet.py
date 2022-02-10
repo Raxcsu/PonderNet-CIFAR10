@@ -328,6 +328,8 @@ class PonderCIFAR(pl.LightningModule):
         self.lr = lr
 
         # modules
+        # self.cnn = CNN(n_input=28, kernel_size=kernel_size, n_output=n_hidden_cnn)
+        # self.mlp = MLP(n_input=n_hidden_cnn + n_hidden, n_hidden=n_hidden_lin, n_output=n_hidden)
         self.gru = nn.GRUCell(n_elems, n_hidden)
         self.core = ResNet18()
         self.outpt_layer = nn.Linear(n_hidden, self.n_classes)
@@ -531,11 +533,10 @@ class PonderCIFAR(pl.LightningModule):
 
         model_checkpoint = ModelCheckpoint(dirpath ='./model_checkpoint',
                                            monitor ="val/accuracy",
-                                           mode    ='max',
-                                           filename="pondernet-t1-epochs10-lp05")
+                                           mode    ='max')
         # pondernet-{epoch:02d}-{val/loss:.2f}
 
-        return [early_stopping, model_checkpoint]
+        return [early_stopping, model_checkpoint]        
 
     def _get_loss_and_metrics(self, batch):
         '''
