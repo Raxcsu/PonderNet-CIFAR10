@@ -22,18 +22,11 @@ import torch.nn as nn
 from torch.optim import Adam
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader, random_split
+import torchvision
 from torchvision import transforms
-from pl_bolts.datamodules import CIFAR10DataModule
-from pl_bolts.transforms.dataset_normalizations import cifar10_normalization
-from pytorch_lightning import LightningModule, Trainer, seed_everything
-from pytorch_lightning.callbacks import LearningRateMonitor
-from pytorch_lightning.loggers import TensorBoardLogger
-from torch.optim.lr_scheduler import OneCycleLR
-from torch.optim.swa_utils import AveragedModel, update_bn
-from torchmetrics.functional import accuracy
+from torchvision.datasets import CIFAR10
 import torch.nn.functional as F
 import torchmetrics
-import torchvision
 
 # pl imports
 import pytorch_lightning as pl
@@ -41,6 +34,8 @@ from pytorch_lightning import Trainer, seed_everything
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
+
+from pondernet import *
 
 # remaining imports
 import wandb
@@ -52,18 +47,15 @@ class BasicBlock(nn.Module):
 
     def __init__(self, in_planes, planes, stride=1):
         super(BasicBlock, self).__init__()
-        self.conv1 = nn.Conv2d(
-            in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
-        self.bn1 = nn.BatchNorm2d(planes)
-        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3,
-                               stride=1, padding=1, bias=False)
-        self.bn2 = nn.BatchNorm2d(planes)
+        self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
+        self.bn1   = nn.BatchNorm2d(planes)
+        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3,stride=1, padding=1, bias=False)
+        self.bn2   = nn.BatchNorm2d(planes)
 
         self.shortcut = nn.Sequential()
         if stride != 1 or in_planes != self.expansion*planes:
             self.shortcut = nn.Sequential(
-                nn.Conv2d(in_planes, self.expansion*planes,
-                          kernel_size=1, stride=stride, bias=False),
+                nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=False),
                 nn.BatchNorm2d(self.expansion*planes)
             )
 
@@ -80,19 +72,16 @@ class Bottleneck(nn.Module):
     def __init__(self, in_planes, planes, stride=1):
         super(Bottleneck, self).__init__()
         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=1, bias=False)
-        self.bn1 = nn.BatchNorm2d(planes)
-        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3,
-                               stride=stride, padding=1, bias=False)
-        self.bn2 = nn.BatchNorm2d(planes)
-        self.conv3 = nn.Conv2d(planes, self.expansion *
-                               planes, kernel_size=1, bias=False)
-        self.bn3 = nn.BatchNorm2d(self.expansion*planes)
+        self.bn1   = nn.BatchNorm2d(planes)
+        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
+        self.bn2   = nn.BatchNorm2d(planes)
+        self.conv3 = nn.Conv2d(planes, self.expansion * planes, kernel_size=1, bias=False)
+        self.bn3   = nn.BatchNorm2d(self.expansion*planes)
 
         self.shortcut = nn.Sequential()
         if stride != 1 or in_planes != self.expansion*planes:
             self.shortcut = nn.Sequential(
-                nn.Conv2d(in_planes, self.expansion*planes,
-                          kernel_size=1, stride=stride, bias=False),
+                nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=False),
                 nn.BatchNorm2d(self.expansion*planes)
             )
 
@@ -109,9 +98,8 @@ class ResNet(nn.Module):
         super(ResNet, self).__init__()
         self.in_planes = 64
 
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=3,
-                               stride=1, padding=1, bias=False)
-        self.bn1 = nn.BatchNorm2d(64)
+        self.conv1  = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn1    = nn.BatchNorm2d(64)
         self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1)
         self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
         self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
@@ -120,7 +108,7 @@ class ResNet(nn.Module):
 
     def _make_layer(self, block, planes, num_blocks, stride):
         strides = [stride] + [1]*(num_blocks-1)
-        layers = []
+        layers  = []
         for stride in strides:
             layers.append(block(self.in_planes, planes, stride))
             self.in_planes = planes * block.expansion
@@ -139,18 +127,6 @@ class ResNet(nn.Module):
 
 def ResNet18():
     return ResNet(BasicBlock, [2, 2, 2, 2])
-
-def ResNet34():
-    return ResNet(BasicBlock, [3, 4, 6, 3])
-
-def ResNet50():
-    return ResNet(Bottleneck, [3, 4, 6, 3])
-
-def ResNet101():
-    return ResNet(Bottleneck, [3, 4, 23, 3])
-
-def ResNet152():
-    return ResNet(Bottleneck, [3, 8, 36, 3])
 
 def test():
     net = ResNet18()
@@ -336,8 +312,6 @@ class PonderCIFAR(pl.LightningModule):
         self.lr = lr
 
         # modules
-        # self.cnn = CNN(n_input=28, kernel_size=kernel_size, n_output=n_hidden_cnn)
-        # self.mlp = MLP(n_input=n_hidden_cnn + n_hidden, n_hidden=n_hidden_lin, n_output=n_hidden)
         self.gru = nn.GRUCell(n_elems, n_hidden)
         self.core = ResNet18()
         self.outpt_layer = nn.Linear(n_hidden, self.n_classes)
@@ -532,8 +506,19 @@ class PonderCIFAR(pl.LightningModule):
     def configure_callbacks(self):
         '''returns a list of callbacks'''
         # we choose high patience sine we validate 4 times per epoch to have nice graphs
-        early_stopping = EarlyStopping(monitor='val/accuracy', mode='max', patience=6)
-        model_checkpoint = ModelCheckpoint(monitor="val/accuracy", mode='max')
+        early_stopping = EarlyStopping(monitor='val/accuracy',
+                                       mode='max',
+                                       patience=100)
+
+        if not os.path.isdir('checkpoint'):
+            os.mkdir('checkpoint')
+
+        model_checkpoint = ModelCheckpoint(dirpath ='./model_checkpoint',
+                                           monitor ="val/accuracy",
+                                           mode    ='max',
+                                           filename='pondernet-epoch{epoch:02d}-val_loss{val/loss:.2f}',
+                                           FILE_EXTENSION='.pth')
+
         return [early_stopping, model_checkpoint]
 
     def _get_loss_and_metrics(self, batch):
