@@ -4,3 +4,4 @@ cifar-10-python.tar.gz
 lightning_logs/*
 wandb/*
 __pycache__/*
+model_checkpoint/*
