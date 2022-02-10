@@ -4,8 +4,6 @@
 # ///////////// INTERPOLATION TASK /////////////
 # //////////////////////////////////////////////
 
-# This code is adopted from one of the [PyTorch Lightning examples](https://colab.research.google.com/drive/1Tr9dYlwBKk6-LgLKGO8KYZULnguVA992?usp=sharing#scrollTo=CxXtBfFrKYgA) and [this PonderNet implementation](https://nn.labml.ai/adaptive_computation/ponder_net/index.html).
-
 # ==============================================
 # SETUP AND IMPORTS
 # ==============================================
@@ -54,7 +52,7 @@ wandb.login()
 
 # Trainer settings
 BATCH_SIZE      = 128
-EPOCHS          = 50
+EPOCHS          = 10
 
 # Optimizer settings
 LR              = 0.001
