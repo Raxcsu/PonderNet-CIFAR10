@@ -88,18 +88,19 @@ test_transform = transforms.Compose([
 # on your account's desired project.
 
 # initialize datamodule and model
-cifar10_dm = CIFAR10_DataModule(data_dir        = './',
-                                train_transform = train_transform,
-                                test_transform  = test_transform,
-                                batch_size      = 128,
-                               )
+cifar10_dm = CIFAR10_DataModule(
+    data_dir='./',
+    train_transform=train_transform,
+    test_transform=test_transform,
+    batch_size=128)
 
-model = PonderCIFAR(n_elems   = N_ELEMS,
-                    n_hidden  = N_HIDDEN,
-                    max_steps = MAX_STEPS,
-                    lambda_p  = LAMBDA_P,
-                    beta      = BETA,
-                    lr        = LR)
+model = PonderCIFAR(
+    n_elems=N_ELEMS,
+    n_hidden=N_HIDDEN,
+    max_steps=MAX_STEPS,
+    lambda_p=LAMBDA_P,
+    beta=BETA,
+    lr=LR)
 
 # setup logger
 logger = WandbLogger(project='PonderNet - CIFAR10', name='interpolation', offline=False)
