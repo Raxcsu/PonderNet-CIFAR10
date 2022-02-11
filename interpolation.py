@@ -52,7 +52,7 @@ wandb.login()
 
 # Trainer settings
 BATCH_SIZE      = 128
-EPOCHS          = 10
+EPOCHS          = 50
 
 # Optimizer settings
 LR              = 0.001
@@ -62,25 +62,25 @@ GRAD_NORM_CLIP  = 0.5
 N_ELEMS         = 512
 N_HIDDEN        = 100
 MAX_STEPS       = 20
-LAMBDA_P        = 0.5
+LAMBDA_P        = 0.1
 BETA            = 0.01
 
 # ==============================================
 # CIFAR10 SETUP
 # ==============================================
 
-train_transforms = transforms.Compose([
+train_transform = transforms.Compose([
     transforms.RandomCrop(32, padding=4),
     transforms.RandomHorizontalFlip(),
     transforms.ToTensor(),
 ])
 
-test_transforms = transforms.Compose([
+test_transform = transforms.Compose([
     transforms.ToTensor(),
-])
+])  
 
 # ==============================================
-# RUN INTERPOLATION
+# RUN EXTRAPOLATION
 # ==============================================
 
 # Load the CIFAR10 dataset with no rotations and train PonderNet on it.
@@ -89,9 +89,10 @@ test_transforms = transforms.Compose([
 
 # initialize datamodule and model
 cifar10_dm = CIFAR10_DataModule(data_dir        = './',
-                                train_transform = train_transforms,
-                                test_transform  = test_transforms,
-                                batch_size      = 128)
+                                train_transform = train_transform,
+                                test_transform  = test_transform,
+                                batch_size      = 128,
+                               )
 
 model = PonderCIFAR(n_elems   = N_ELEMS,
                     n_hidden  = N_HIDDEN,
