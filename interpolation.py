@@ -34,7 +34,7 @@ from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 
 from pondernet import *
-from cifar10data import CIFAR10_DataModule
+from cifar10data import *
 
 # remaining imports
 import wandb

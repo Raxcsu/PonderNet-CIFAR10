@@ -103,39 +103,37 @@ train_transform, test_transform = get_transforms()
 # Make sure to edit the `WandbLogger` call so that you log the experiment
 # on your account's desired project.
 
-if __name__ == "__main__":
+# initialize datamodule and model
+cifar10_dm = CIFAR10_DataModule(data_dir        = './',
+                                train_transform = train_transform,
+                                test_transform  = test_transform,
+                                batch_size      = 128,
+                               )
 
-    # initialize datamodule and model
-    cifar10_dm = CIFAR10_DataModule(data_dir        = './',
-                                    train_transform = train_transforms,
-                                    test_transform  = test_transforms,
-                                    batch_size      = 128,
-                                   )
+model = PonderCIFAR(n_elems   = N_ELEMS,
+                    n_hidden  = N_HIDDEN,
+                    max_steps = MAX_STEPS,
+                    lambda_p  = LAMBDA_P,
+                    beta      = BETA,
+                    lr        = LR)
 
-    model = PonderCIFAR(n_elems   = N_ELEMS,
-                        n_hidden  = N_HIDDEN,
-                        max_steps = MAX_STEPS,
-                        lambda_p  = LAMBDA_P,
-                        beta      = BETA,
-                        lr        = LR)
+# setup logger
+logger = WandbLogger(project='PonderNet - CIFAR10', name='extrapolation', offline=False)
+logger.watch(model)
 
-    # setup logger
-    logger = WandbLogger(project='PonderNet - CIFAR10', name='extrapolation', offline=False)
-    logger.watch(model)
+trainer = Trainer(
+    logger=logger,                      # W&B integration
+    gpus=-1,                            # use all available GPU's
+    max_epochs=EPOCHS,                  # maximum number of epochs
+    gradient_clip_val=GRAD_NORM_CLIP,   # gradient clipping
+    val_check_interval=0.25,            # validate 4 times per epoch
+    precision=16,                       # train in half precision
+    deterministic=True)                 # for reproducibility
 
-    trainer = Trainer(
-        loggers            = logger,            # W&B integration
-        gpus               = -1,                # use all available GPU's
-        max_epochs         = EPOCHS,            # maximum number of epochs
-        gradient_clip_val  = GRAD_NORM_CLIP,    # gradient clipping
-        val_check_interval = 0.25,              # validate 4 times per epoch
-        precision          = 16,                # train in half precision
-        deterministic      = True)              # for reproducibility
+# fit the model
+trainer.fit(model, datamodule=cifar10_dm)
 
-    # fit the model
-    trainer.fit(model, datamodule=cifar10_dm)
+# evaluate on the test set
+trainer.test(model, datamodule=cifar10_dm)
 
-    # evaluate on the test set
-    trainer.test(model, datamodule=cifar10_dm)
-
-    wandb.finish()
+wandb.finish()
