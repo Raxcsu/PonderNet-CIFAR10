@@ -448,6 +448,10 @@ class PonderCIFAR(pl.LightningModule):
         self.log('train/reconstruction_loss', loss.get_rec_loss())
         self.log('train/regularization_loss', loss.get_reg_loss())
 
+        table = self.Table(data=steps, columns=["step", "height"])
+        histogram = self.plot.histogram(table, value='height', title='Histogram')
+        self.log('histogram_1': histogram)
+
         return loss.get_total_loss()
 
     def validation_step(self, batch, batch_idx):
