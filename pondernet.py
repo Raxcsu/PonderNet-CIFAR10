@@ -448,8 +448,6 @@ class PonderCIFAR(pl.LightningModule):
         self.log('train/reconstruction_loss', loss.get_rec_loss())
         self.log('train/regularization_loss', loss.get_reg_loss())
 
-        print(steps)
-
         return loss.get_total_loss()
 
     def validation_step(self, batch, batch_idx):
