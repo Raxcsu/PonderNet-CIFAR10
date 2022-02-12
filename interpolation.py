@@ -51,19 +51,19 @@ wandb.login()
 # ==============================================
 
 # Trainer settings
-BATCH_SIZE      = 128
-EPOCHS          = 10
+BATCH_SIZE = 128
+EPOCHS = 10
 
 # Optimizer settings
-LR              = 0.001
-GRAD_NORM_CLIP  = 0.5
+LR = 0.001
+GRAD_NORM_CLIP = 0.5
 
 # Model hparams
-N_ELEMS         = 512
-N_HIDDEN        = 100
-MAX_STEPS       = 20
-LAMBDA_P        = 0.5
-BETA            = 0.01
+N_ELEMS   = 512
+N_HIDDEN  = 100
+MAX_STEPS = 20
+LAMBDA_P  = 0.5
+BETA      = 0.01
 
 # ==============================================
 # CIFAR10 SETUP
@@ -92,7 +92,7 @@ cifar10_dm = CIFAR10_DataModule(
     data_dir='./',
     train_transform=train_transform,
     test_transform=test_transform,
-    batch_size=128)
+    batch_size=BATCH_SIZE)
 
 model = PonderCIFAR(
     n_elems=N_ELEMS,
@@ -103,7 +103,7 @@ model = PonderCIFAR(
     lr=LR)
 
 # setup logger
-logger = WandbLogger(project='Test-histogram', name='interpolation', offline=False)
+logger = WandbLogger(project='Test-Histogram', name='interpolation', offline=False)
 logger.watch(model)
 
 trainer = Trainer(
@@ -113,8 +113,7 @@ trainer = Trainer(
     gradient_clip_val=GRAD_NORM_CLIP,   # gradient clipping
     val_check_interval=0.25,            # validate 4 times per epoch
     precision=16,                       # train in half precision
-    deterministic=True,                 # for reproducibility
-    enable_progress_bar=False)          # disable progress bar
+    deterministic=True)                 # for reproducibility
 
 # fit the model
 trainer.fit(model, datamodule=cifar10_dm)

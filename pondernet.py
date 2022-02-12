@@ -472,8 +472,8 @@ class PonderCIFAR(pl.LightningModule):
         self.log('val/accuracy', acc)
         self.log('val/total_loss', loss.get_total_loss())
         self.log('val/reconstruction_loss', loss.get_rec_loss())
-        self.log('val/regularization_loss', loss.get_reg_loss()
-)
+        self.log('val/regularization_loss', loss.get_reg_loss())
+
         # for custom callback
         return preds
 
@@ -535,8 +535,6 @@ class PonderCIFAR(pl.LightningModule):
                                            monitor ="val/accuracy",
                                            mode    ='max')
         # pondernet-{epoch:02d}-{val/loss:.2f}
-
-        return [early_stopping, model_checkpoint]        
 
     def _get_loss_and_metrics(self, batch):
         '''
