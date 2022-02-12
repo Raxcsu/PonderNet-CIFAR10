@@ -52,7 +52,7 @@ wandb.login()
 
 # Trainer settings
 BATCH_SIZE      = 128
-EPOCHS          = 50
+EPOCHS          = 40
 
 # Optimizer settings
 LR              = 0.001
@@ -62,7 +62,7 @@ GRAD_NORM_CLIP  = 0.5
 N_ELEMS         = 512
 N_HIDDEN        = 100
 MAX_STEPS       = 20
-LAMBDA_P        = 0.1
+LAMBDA_P        = 0.2
 BETA            = 0.01
 
 # ==============================================
