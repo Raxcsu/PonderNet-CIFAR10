@@ -113,7 +113,8 @@ trainer = Trainer(
     gradient_clip_val=GRAD_NORM_CLIP,   # gradient clipping
     val_check_interval=0.25,            # validate 4 times per epoch
     precision=16,                       # train in half precision
-    deterministic=True)                 # for reproducibility
+    deterministic=True,                 # for reproducibility
+    enable_progress_bar=False)          # disable progress bar
 
 # fit the model
 trainer.fit(model, datamodule=cifar10_dm)

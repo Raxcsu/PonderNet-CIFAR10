@@ -448,9 +448,7 @@ class PonderCIFAR(pl.LightningModule):
         self.log('train/reconstruction_loss', loss.get_rec_loss())
         self.log('train/regularization_loss', loss.get_reg_loss())
 
-        table = self.Table(data=steps, columns=["step", "height"])
-        histogram = self.plot.histogram(table, value='height', title='Histogram')
-        self.log('histogram_1': histogram)
+        print(steps)
 
         return loss.get_total_loss()
 
@@ -476,8 +474,8 @@ class PonderCIFAR(pl.LightningModule):
         self.log('val/accuracy', acc)
         self.log('val/total_loss', loss.get_total_loss())
         self.log('val/reconstruction_loss', loss.get_rec_loss())
-        self.log('val/regularization_loss', loss.get_reg_loss())
-
+        self.log('val/regularization_loss', loss.get_reg_loss()
+)
         # for custom callback
         return preds
 
@@ -530,7 +528,7 @@ class PonderCIFAR(pl.LightningModule):
         # we choose high patience sine we validate 4 times per epoch to have nice graphs
         early_stopping = EarlyStopping(monitor='val/accuracy',
                                        mode='max',
-                                       patience=100)
+                                       patience=6)
 
         if not os.path.isdir('./model_checkpoint'):
             os.mkdir('./model_checkpoint')
