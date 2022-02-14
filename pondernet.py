@@ -527,11 +527,7 @@ class PonderCIFAR(pl.LightningModule):
         # we choose high patience sine we validate 4 times per epoch to have nice graphs
         early_stopping = EarlyStopping(monitor='val/accuracy',
                                        mode='max',
-<<<<<<< HEAD
-                                       patience=10)
-=======
-                                       patience=6)
->>>>>>> 78694ea70061824934bd34970545565ab15534b9
+                                       patience=100)
 
         if not os.path.isdir('./model_checkpoint'):
             os.mkdir('./model_checkpoint')
@@ -540,6 +536,7 @@ class PonderCIFAR(pl.LightningModule):
                                            monitor ="val/accuracy",
                                            mode    ='max')
         # pondernet-{epoch:02d}-{val/loss:.2f}
+        return [early_stopping, model_checkpoint]
 
     def _get_loss_and_metrics(self, batch):
         '''
@@ -587,7 +584,6 @@ class PonderCIFAR(pl.LightningModule):
 
         # calculate the accuracy
         logits = y.gather(dim=0, index=halted_index).squeeze()
-        print(logits)
         preds = torch.argmax(logits, dim=1)
         acc = self.accuracy(preds, target)
 

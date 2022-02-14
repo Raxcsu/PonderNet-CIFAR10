@@ -54,32 +54,19 @@ wandb.login()
 DATA_DIR = './data'
 
 # Trainer settings
-<<<<<<< HEAD
-BATCH_SIZE      = 128
-EPOCHS          = 40
-=======
 BATCH_SIZE = 128
-EPOCHS = 10
->>>>>>> 78694ea70061824934bd34970545565ab15534b9
+EPOCHS = 50
 
 # Optimizer settings
 LR = 0.001
 GRAD_NORM_CLIP = 0.5
 
 # Model hparams
-<<<<<<< HEAD
-N_ELEMS         = 512
-N_HIDDEN        = 100
-MAX_STEPS       = 20
-LAMBDA_P        = 0.2
-BETA            = 0.01
-=======
 N_ELEMS   = 512
 N_HIDDEN  = 100
 MAX_STEPS = 20
-LAMBDA_P  = 0.5
+LAMBDA_P  = 0.1
 BETA      = 0.01
->>>>>>> 78694ea70061824934bd34970545565ab15534b9
 
 # ==============================================
 # CIFAR10 SETUP
@@ -93,7 +80,7 @@ train_transform = transforms.Compose([
 
 test_transform = transforms.Compose([
     transforms.ToTensor(),
-])  
+])
 
 # ==============================================
 # RUN EXTRAPOLATION
@@ -119,7 +106,7 @@ model = PonderCIFAR(
     lr=LR)
 
 # setup logger
-logger = WandbLogger(project='Test-Histogram', name='interpolation', offline=False)
+logger = WandbLogger(project='PonderNet - CIFAR10', name='interpolation', offline=False)
 logger.watch(model)
 
 trainer = Trainer(
