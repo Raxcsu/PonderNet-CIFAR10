@@ -23,6 +23,7 @@ from torch.utils.data import DataLoader, random_split
 import torchvision
 from torchvision import transforms
 from torchvision.datasets import CIFAR10
+from torchvision.datasets import CIFAR100
 import torch.nn.functional as F
 import torchmetrics
 
@@ -34,7 +35,7 @@ from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 
 from pondernet import *
-from cifar10data import *
+from cifardata import *
 
 # remaining imports
 import wandb
@@ -50,6 +51,8 @@ wandb.login()
 # CONSTANTS AND HYPERPARAMETERS
 # ==============================================
 
+DATA_DIR = './data'
+
 # Trainer settings
 BATCH_SIZE = 128
 EPOCHS = 10
@@ -62,7 +65,7 @@ GRAD_NORM_CLIP = 0.5
 N_ELEMS   = 512
 N_HIDDEN  = 100
 MAX_STEPS = 20
-LAMBDA_P  = 0.5
+LAMBDA_P  = 0.1
 BETA      = 0.01
 
 # ==============================================
@@ -104,8 +107,8 @@ train_transform, test_transform = get_transforms()
 # on your account's desired project.
 
 # initialize datamodule and model
-cifar10_dm = CIFAR10_DataModule(
-    data_dir='./',
+cifar100_dm = CIFAR100_DataModule(
+    data_dir=DATA_DIR,
     train_transform=train_transform,
     test_transform=test_transform,
     batch_size=BATCH_SIZE)
@@ -132,9 +135,9 @@ trainer = Trainer(
     deterministic=True)                 # for reproducibility
 
 # fit the model
-trainer.fit(model, datamodule=cifar10_dm)
+trainer.fit(model, datamodule=cifar100_dm)
 
 # evaluate on the test set
-trainer.test(model, datamodule=cifar10_dm)
+trainer.test(model, datamodule=cifar100_dm)
 
 wandb.finish()

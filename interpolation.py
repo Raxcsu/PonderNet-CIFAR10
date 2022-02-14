@@ -23,6 +23,7 @@ from torch.utils.data import DataLoader, random_split
 import torchvision
 from torchvision import transforms
 from torchvision.datasets import CIFAR10
+from torchvision.datasets import CIFAR100
 import torch.nn.functional as F
 import torchmetrics
 
@@ -34,7 +35,7 @@ from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 
 from pondernet import *
-from cifar10data import *
+from cifardata import *
 
 # remaining imports
 import wandb
@@ -49,6 +50,8 @@ wandb.login()
 # ==============================================
 # CONSTANTS AND HYPERPARAMETERS
 # ==============================================
+
+DATA_DIR = './data'
 
 # Trainer settings
 BATCH_SIZE = 128
@@ -83,13 +86,13 @@ test_transform = transforms.Compose([
 # RUN EXTRAPOLATION
 # ==============================================
 
-# Load the CIFAR10 dataset with no rotations and train PonderNet on it.
+# Load the CIFAR100 dataset with no rotations and train PonderNet on it.
 # Make sure to edit the `WandbLogger` call so that you log the experiment
 # on your account's desired project.
 
 # initialize datamodule and model
-cifar10_dm = CIFAR10_DataModule(
-    data_dir='./',
+cifar100_dm = CIFAR100_DataModule(
+    data_dir=DATA_DIR,
     train_transform=train_transform,
     test_transform=test_transform,
     batch_size=BATCH_SIZE)
@@ -116,9 +119,9 @@ trainer = Trainer(
     deterministic=True)                 # for reproducibility
 
 # fit the model
-trainer.fit(model, datamodule=cifar10_dm)
+trainer.fit(model, datamodule=cifar100_dm)
 
 # evaluate on the test set
-trainer.test(model, datamodule=cifar10_dm)
+trainer.test(model, datamodule=cifar100_dm)
 
 wandb.finish()
