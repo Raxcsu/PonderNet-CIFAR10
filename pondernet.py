@@ -19,6 +19,7 @@ from torch.utils.data import DataLoader, random_split
 import torchvision
 from torchvision import transforms
 from torchvision.datasets import CIFAR10
+from torchvision.datasets import CIFAR100
 import torch.nn.functional as F
 import torchmetrics
 
@@ -30,7 +31,7 @@ from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 
 from pondernet import *
-# from cifar10data import CIFAR10_DataModule
+from cifardata import *
 
 # remaining imports
 import wandb
@@ -320,7 +321,7 @@ class PonderCIFAR(pl.LightningModule):
         super().__init__()
 
         # attributes
-        self.n_classes = 10
+        self.n_classes = 100
         self.max_steps = max_steps
         self.lambda_p = lambda_p
         self.beta = beta
@@ -586,6 +587,7 @@ class PonderCIFAR(pl.LightningModule):
 
         # calculate the accuracy
         logits = y.gather(dim=0, index=halted_index).squeeze()
+        print(logits)
         preds = torch.argmax(logits, dim=1)
         acc = self.accuracy(preds, target)
 
