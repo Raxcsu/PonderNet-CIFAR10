@@ -513,7 +513,7 @@ class PonderCIFAR(pl.LightningModule):
                 optimizer and a learning scheduler respectively.
         '''
         #optimizer = Adam(self.parameters(), lr=self.lr)
-        optimizer = SGD(model.parameters(), lr=self.lr, momentum=self.momentum, weight_decay=self.weight_decay)
+        optimizer = SGD(self.parameters(), lr=self.lr, momentum=self.momentum, weight_decay=self.weight_decay)
         return {
             "optimizer": optimizer,
             "lr_scheduler": {
