@@ -13,13 +13,12 @@ import os
 # torch imports
 import torch
 import torch.nn as nn
-from torch.optim import Adam
+from torch.optim import Adam, SGD
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader, random_split
 import torchvision
 from torchvision import transforms
-from torchvision.datasets import CIFAR10
-from torchvision.datasets import CIFAR100
+from torchvision.datasets import CIFAR10, CIFAR100
 import torch.nn.functional as F
 import torchmetrics
 
@@ -316,7 +315,7 @@ class PonderCIFAR(pl.LightningModule):
             Linear module that generates the halting probability at each step.
     '''
 
-    def __init__(self, n_elems, n_hidden, max_steps, lambda_p, beta, lr):
+    def __init__(self, n_elems, n_hidden, max_steps, lambda_p, beta, lr, momentum, weight_decay):
         
         super().__init__()
 
@@ -327,6 +326,8 @@ class PonderCIFAR(pl.LightningModule):
         self.beta = beta
         self.n_hidden = n_hidden
         self.lr = lr
+        self.momentum = momentum
+        self.weight_decay = weight_decay
 
         # modules
         # self.cnn = CNN(n_input=28, kernel_size=kernel_size, n_output=n_hidden_cnn)
@@ -511,7 +512,8 @@ class PonderCIFAR(pl.LightningModule):
                 Dictionary with `optimizer` and `lr_scheduler` keys, with an
                 optimizer and a learning scheduler respectively.
         '''
-        optimizer = Adam(self.parameters(), lr=self.lr)
+        #optimizer = Adam(self.parameters(), lr=self.lr)
+        optimizer = SGD(model.parameters(), lr=self.lr, momentum=self.momentum, weight_decay=self.weight_decay)
         return {
             "optimizer": optimizer,
             "lr_scheduler": {

@@ -17,13 +17,12 @@ import os
 # torch imports
 import torch
 import torch.nn as nn
-from torch.optim import Adam
+from torch.optim import Adam, SGD
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader, random_split
 import torchvision
 from torchvision import transforms
-from torchvision.datasets import CIFAR10
-from torchvision.datasets import CIFAR100
+from torchvision.datasets import CIFAR10, CIFAR100
 import torch.nn.functional as F
 import torchmetrics
 
@@ -58,8 +57,10 @@ BATCH_SIZE = 128
 EPOCHS = 50
 
 # Optimizer settings
-LR = 0.001
+LR = 0.1        # 0.001ADAM
 GRAD_NORM_CLIP = 0.5
+MOMENTUM = 0.9
+WEIGHT_DECAY = 5e-4
 
 # Model hparams
 N_ELEMS   = 512
@@ -103,10 +104,12 @@ model = PonderCIFAR(
     max_steps=MAX_STEPS,
     lambda_p=LAMBDA_P,
     beta=BETA,
-    lr=LR)
+    lr=LR,
+    momentum=MOMENTUM,
+    weight_decay=WEIGHT_DECAY)
 
 # setup logger
-logger = WandbLogger(project='PonderNet - CIFAR10', name='interpolation', offline=False)
+logger = WandbLogger(project='PonderNet - CIFAR10', name='interpolation-CIFAR100', offline=False)
 logger.watch(model)
 
 trainer = Trainer(

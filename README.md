@@ -22,8 +22,9 @@ python extrapolation.py
 
 ### Accuracy
 INTERPOLATION TASK
-| Model             | Acc.        |
-| ----------------- | ----------- |
-| [ResNet18](https://arxiv.org/abs/1512.03385)          | 93.02%      |
-| ResNet18 + PonderNet (epochs=10)          | 83.24%      |
-| ResNet18 + PonderNet (epochs=50)          | 90.96%      |
+| Model             | Dataset		| Acc.        |
+| ----------------- | ----------- 	| ----------- |
+| [ResNet18](https://arxiv.org/abs/1512.03385)					| CIFAR-10 		| 93.02%    |
+| ResNet18 + PonderNet (epochs=10)								| CIFAR-10 		| 83.24%    |
+| ResNet18 + PonderNet (epochs=50)								| CIFAR-10		| 90.96%	|
+| [ResNet18](https://github.com/mbsariyildiz/resnet-pytorch)	| CIFAR-100 	| 79.20%	|
