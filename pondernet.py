@@ -29,9 +29,6 @@ from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 
-from pondernet import *
-from cifardata import *
-
 # remaining imports
 import wandb
 from math import floor

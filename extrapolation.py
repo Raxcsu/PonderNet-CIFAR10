@@ -34,6 +34,7 @@ from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 
 from pondernet import *
+from resnet import *
 from cifardata import *
 
 # remaining imports

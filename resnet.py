@@ -20,9 +20,6 @@ from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 
-from pondernet import *
-from cifardata import *
-
 # remaining imports
 import wandb
 from math import floor
@@ -285,7 +282,7 @@ class ResnetCIFAR(pl.LightningModule):
                 optimizer and a learning scheduler respectively.
         '''
         #optimizer = Adam(self.parameters(), lr=self.lr)
-        optimizer = SGD(model.parameters(), lr=self.lr, momentum=self.momentum, weight_decay=self.weight_decay)
+        optimizer = SGD(self.parameters(), lr=self.lr, momentum=self.momentum, weight_decay=self.weight_decay)
         return {
             "optimizer": optimizer,
             "lr_scheduler": {
@@ -337,9 +334,6 @@ class ResnetCIFAR(pl.LightningModule):
 
         # forward pass
         preds = self(data)
-
-        if self.num_classes == 2:
-            target = F.one_hot(target, num_classes=2).float()
 
         # calculate the loss
         loss = nn.CrossEntropyLoss(preds, target)
