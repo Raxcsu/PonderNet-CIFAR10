@@ -321,6 +321,7 @@ class PonderCIFAR(pl.LightningModule):
 
         # attributes
         self.n_classes = 100
+        self.n_elems = n_elems
         self.max_steps = max_steps
         self.lambda_p = lambda_p
         self.beta = beta
@@ -332,10 +333,10 @@ class PonderCIFAR(pl.LightningModule):
         # modules
         # self.cnn = CNN(n_input=28, kernel_size=kernel_size, n_output=n_hidden_cnn)
         # self.mlp = MLP(n_input=n_hidden_cnn + n_hidden, n_hidden=n_hidden_lin, n_output=n_hidden)
-        self.gru = nn.GRUCell(n_elems, n_hidden)
+        self.gru = nn.GRUCell(self.n_elems, self.n_hidden)
         self.core = ResNet18()
-        self.outpt_layer = nn.Linear(n_hidden, self.n_classes)
-        self.lambda_layer = nn.Linear(n_hidden, 1)
+        self.outpt_layer = nn.Linear(self.n_hidden, self.n_classes)
+        self.lambda_layer = nn.Linear(self.n_hidden, 1)
 
         # losses
         self.loss_rec = ReconstructionLoss(nn.CrossEntropyLoss())
