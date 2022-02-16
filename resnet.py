@@ -347,3 +347,6 @@ class ResnetCIFAR(pl.LightningModule):
         acc = self.accuracy(preds, target)
 
         return loss, preds, acc
+
+
+test()
