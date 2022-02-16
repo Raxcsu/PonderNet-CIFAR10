@@ -122,8 +122,12 @@ def ResNet18():
 
 def test():
     net = ResNet18()
-    y = net(torch.randn(1, 3, 32, 32))
-    print(y.size())
+    output_layer = nn.Linear(512, 100)
+    
+    out = output_layer(net)
+
+    out = net(torch.randn(1, 3, 32, 32))
+    print(out.size())
 
 
 # ==============================================
