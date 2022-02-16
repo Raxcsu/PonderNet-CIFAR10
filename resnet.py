@@ -334,10 +334,12 @@ class ResnetCIFAR(pl.LightningModule):
 
         # forward pass
         preds = self(data)
+        print(preds)
+        print(target)
 
         # calculate the loss
         loss = nn.CrossEntropyLoss(preds, target)
-        acc = (torch.argmax(target,1) == torch.argmax(preds,1)) \
-                .type(torch.FloatTensor).mean()
+        print(loss)
+        acc = self.accuracy(preds, target)
 
         return loss, preds, acc
