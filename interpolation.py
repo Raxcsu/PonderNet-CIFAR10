@@ -116,7 +116,7 @@ model = ResnetCIFAR(
     weight_decay=WEIGHT_DECAY)
 
 # setup logger
-logger = WandbLogger(project='PonderNet - CIFAR10', name='ResnetCIFAR', offline=False)
+logger = WandbLogger(project='PonderNet - CIFAR10', name='interpolation-ResnetCIFAR', offline=False)
 logger.watch(model)
 
 trainer = Trainer(
