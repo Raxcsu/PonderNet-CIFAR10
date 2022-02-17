@@ -69,6 +69,7 @@ N_HIDDEN  = 100
 MAX_STEPS = 20
 LAMBDA_P  = 0.1
 BETA      = 0.01
+N_CLASSES = 100
 
 # ==============================================
 # CIFAR10 SETUP
@@ -111,6 +112,7 @@ model = PonderCIFAR(
     weight_decay=WEIGHT_DECAY)
 '''
 model = ResnetCIFAR(
+    num_classes=N_CLASSES,
     lr=LR,
     momentum=MOMENTUM,
     weight_decay=WEIGHT_DECAY)
