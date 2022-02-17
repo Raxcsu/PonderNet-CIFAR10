@@ -201,13 +201,10 @@ class ResnetCIFAR(pl.LightningModule):
         '''
         #loss, _, acc = self._get_loss_and_metrics(batch)
         x, y = batch
-        preds = self(x)
-        if self.num_classes == 2:
-            y = F.one_hot(y, num_classes=2).float()
-        
-        loss = nn.CrossEntropyLoss(preds, y)
-        acc = (torch.argmax(y,1) == torch.argmax(preds,1)) \
-                .type(torch.FloatTensor).mean()
+        logits = F.log_softmax(self.model(x), dim=1)
+        loss = F.nll_loss(logits, y)
+        preds = torch.argmax(logits, dim=1)
+        acc = self.accuracy(preds, y)
 
         # logging
         self.log('train/accuracy', acc, on_epoch=True, prog_bar=True, logger=True)
@@ -232,13 +229,10 @@ class ResnetCIFAR(pl.LightningModule):
         '''
         #loss, preds, acc = self._get_loss_and_metrics(batch)
         x, y = batch
-        preds = self(x)
-        if self.num_classes == 2:
-            y = F.one_hot(y, num_classes=2).float()
-        
-        loss = nn.CrossEntropyLoss(preds, y)
-        acc = (torch.argmax(y,1) == torch.argmax(preds,1)) \
-                .type(torch.FloatTensor).mean()
+        logits = self(x)
+        loss = F.nll_loss(logits, y)
+        preds = torch.argmax(logits, dim=1)
+        acc = self.accuracy(preds, y)
 
         # logging
         self.log('val/accuracy', acc, on_epoch=True, prog_bar=True, logger=True)
@@ -263,13 +257,10 @@ class ResnetCIFAR(pl.LightningModule):
         '''
         #_, _, acc = self._get_loss_and_metrics(batch)
         x, y = batch
-        preds = self(x)
-        if self.num_classes == 2:
-            y = F.one_hot(y, num_classes=2).float()
-        
-        loss = nn.CrossEntropyLoss(preds, y)
-        acc = (torch.argmax(y,1) == torch.argmax(preds,1)) \
-                .type(torch.FloatTensor).mean()
+        logits = self(x)
+        loss = F.nll_loss(logits, y)
+        preds = torch.argmax(logits, dim=1)
+        acc = self.accuracy(preds, y)
 
         # logging
         self.log(f'test_{dataset_idx}/accuracy', acc, on_step=True, prog_bar=True, logger=True)
@@ -312,8 +303,9 @@ class ResnetCIFAR(pl.LightningModule):
         # pondernet-{epoch:02d}-{val/loss:.2f}
         return [early_stopping, model_checkpoint]    
 
+'''
     def _get_loss_and_metrics(self, batch):
-        '''
+        
             Returns the losses, the predictions, the accuracy and the number of steps.
 
             Parameters
@@ -331,7 +323,7 @@ class ResnetCIFAR(pl.LightningModule):
 
             acc : torch.Tensor
                 Accuracy obtained with the current batch.
-        '''
+        
         # extract the batch
         data, target = batch
 
@@ -343,3 +335,4 @@ class ResnetCIFAR(pl.LightningModule):
         acc = self.accuracy(preds, target)
 
         return loss, preds, acc
+        '''
