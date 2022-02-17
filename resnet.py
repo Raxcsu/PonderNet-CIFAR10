@@ -86,7 +86,7 @@ class Bottleneck(nn.Module):
 
 class ResNet(nn.Module):
 
-    def __init__(self, block, num_blocks, num_classes=10):
+    def __init__(self, block, num_blocks, num_classes=100):
         
         super(ResNet, self).__init__()
         self.in_planes = 64
@@ -114,7 +114,7 @@ class ResNet(nn.Module):
         out = self.layer4(out)
         out = F.avg_pool2d(out, 4)
         out = out.view(out.size(0), -1)             # output of embedding
-        # out = self.linear(out)
+        out = self.linear(out)
         return out    
 
 def ResNet18():
@@ -122,9 +122,6 @@ def ResNet18():
 
 def test():
     net = ResNet18()
-    output_layer = nn.Linear(512, 100)
-    
-    out = output_layer(net)
 
     out = net(torch.randn(1, 3, 32, 32))
     print(out.size())
@@ -163,20 +160,17 @@ class ResnetCIFAR(pl.LightningModule):
             Linear module that generates the halting probability at each step.
     '''
 
-    def __init__(self, n_elems, lr, momentum, weight_decay):
+    def __init__(self, lr, momentum, weight_decay):
         
         super().__init__()
 
         # attributes
-        self.n_classes = 100
-        self.n_elems = n_elems
         self.lr = lr
         self.momentum = momentum
         self.weight_decay = weight_decay
 
         # modules
         self.core = ResNet18()
-        self.output_layer = nn.Linear(self.n_elems, self.n_classes)
 
         # metrics
         self.accuracy = torchmetrics.Accuracy()
@@ -206,9 +200,8 @@ class ResnetCIFAR(pl.LightningModule):
 
         # propagate to get h_1
         x = self.core(img)
-        out = self.output_layer(x)
 
-        return out
+        return x
     
     def training_step(self, batch, batch_idx):
         '''
@@ -347,6 +340,3 @@ class ResnetCIFAR(pl.LightningModule):
         acc = self.accuracy(preds, target)
 
         return loss, preds, acc
-
-
-test()
