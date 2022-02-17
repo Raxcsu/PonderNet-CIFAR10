@@ -199,11 +199,17 @@ class ResnetCIFAR(pl.LightningModule):
                 Loss value of the current batch.
         '''
         #loss, _, acc = self._get_loss_and_metrics(batch)
-        x, y = batch
-        logits = F.log_softmax(self.core(x), dim=1)
-        loss = F.nll_loss(logits, y)
+
+        # extract the batch
+        data, target = batch
+
+        # calculate the loss
+        logits = F.log_softmax(self.core(data), dim=1)
+        loss = nn.CrossEntropyLoss(logits, target)
+
         preds = torch.argmax(logits, dim=1)
-        acc = self.accuracy(preds, y)
+        
+        acc = self.accuracy(preds, target)
 
         # logging
         self.log('train/accuracy', acc, on_epoch=True, prog_bar=True, logger=True)
@@ -226,12 +232,7 @@ class ResnetCIFAR(pl.LightningModule):
             preds : torch.Tensor
                 Predictions for the current batch.
         '''
-        #loss, preds, acc = self._get_loss_and_metrics(batch)
-        x, y = batch
-        logits = self(x)
-        loss = F.nll_loss(logits, y)
-        preds = torch.argmax(logits, dim=1)
-        acc = self.accuracy(preds, y)
+        loss, preds, acc = self._get_loss_and_metrics(batch)
 
         # logging
         self.log('val/accuracy', acc, on_epoch=True, prog_bar=True, logger=True)
@@ -254,12 +255,7 @@ class ResnetCIFAR(pl.LightningModule):
             acc : torch.Tensor
                 Accuracy for the current batch.
         '''
-        #_, _, acc = self._get_loss_and_metrics(batch)
-        x, y = batch
-        logits = self(x)
-        loss = F.nll_loss(logits, y)
-        preds = torch.argmax(logits, dim=1)
-        acc = self.accuracy(preds, y)
+        _, _, acc = self._get_loss_and_metrics(batch)
 
         # logging
         self.log(f'test_{dataset_idx}/accuracy', acc, on_step=True, prog_bar=True, logger=True)
@@ -302,9 +298,9 @@ class ResnetCIFAR(pl.LightningModule):
         # pondernet-{epoch:02d}-{val/loss:.2f}
         return [early_stopping, model_checkpoint]    
 
-'''
+
     def _get_loss_and_metrics(self, batch):
-        
+        '''
             Returns the losses, the predictions, the accuracy and the number of steps.
 
             Parameters
@@ -322,16 +318,18 @@ class ResnetCIFAR(pl.LightningModule):
 
             acc : torch.Tensor
                 Accuracy obtained with the current batch.
-        
+        '''
+
         # extract the batch
         data, target = batch
 
-        # forward pass
-        preds = self(data)
-        
         # calculate the loss
-        loss = nn.CrossEntropyLoss(preds, target)
+        logits = self(data)
+        loss = nn.CrossEntropyLoss(logits, target)
+
+        preds = torch.argmax(logits, dim=1)
+        
         acc = self.accuracy(preds, target)
 
         return loss, preds, acc
-        '''
+
