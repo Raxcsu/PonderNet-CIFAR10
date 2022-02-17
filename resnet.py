@@ -181,8 +181,15 @@ class ResnetCIFAR(pl.LightningModule):
 
     def forward(self, img):
         # resnet
+<<<<<<< HEAD
         out = self.core(img)
         return F.log_softmax(out, dim=1)
+=======
+        x = self.core(img)
+        out = F.log_softmax(out, dim=1)
+
+        return out
+>>>>>>> 983a1e23d77b506038aee5c07c11b308076e2db6
     
     def training_step(self, batch, batch_idx):
         '''
@@ -205,7 +212,7 @@ class ResnetCIFAR(pl.LightningModule):
 
         # calculate the loss
         logits = F.log_softmax(self.core(data), dim=1)
-        loss = nn.CrossEntropyLoss(logits, target)
+        loss =  F.nll_loss(logits, target)
 
         preds = torch.argmax(logits, dim=1)
         
@@ -325,7 +332,7 @@ class ResnetCIFAR(pl.LightningModule):
 
         # calculate the loss
         logits = self(data)
-        loss = nn.CrossEntropyLoss(logits, target)
+        loss =  F.nll_loss(logits, target)
 
         preds = torch.argmax(logits, dim=1)
         
