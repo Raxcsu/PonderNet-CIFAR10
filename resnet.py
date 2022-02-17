@@ -181,7 +181,7 @@ class ResnetCIFAR(pl.LightningModule):
 
     def forward(self, img):
         # resnet
-        x = self.core(img)
+        out = self.core(img)
         return F.log_softmax(out, dim=1)
     
     def training_step(self, batch, batch_idx):
