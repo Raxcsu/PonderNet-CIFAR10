@@ -179,28 +179,9 @@ class ResnetCIFAR(pl.LightningModule):
         self.save_hyperparameters()
 
     def forward(self, img):
-        '''
-            Run the forward pass.
-
-            Parameters
-            ----------
-            x : torch.Tensor
-                Batch of input features of shape `(batch_size, n_elems)`.
-
-            Returns
-            -------
-            y : torch.Tensor
-                Tensor of shape `(max_steps, batch_size)` representing
-                the predictions for each step and each sample. In case
-                `allow_halting=True` then the shape is
-                `(steps, batch_size)` where `1 <= steps <= max_steps`.
-        '''
-        # extract batch size for QoL
-        batch_size = img.shape[0]
-
-        # propagate to get h_1
+        # resnet
         x = self.core(img)
-
+        print(x)
         return x
     
     def training_step(self, batch, batch_idx):
@@ -217,7 +198,15 @@ class ResnetCIFAR(pl.LightningModule):
             loss : torch.Tensor
                 Loss value of the current batch.
         '''
-        loss, _, acc = self._get_loss_and_metrics(batch)
+        #loss, _, acc = self._get_loss_and_metrics(batch)
+        x, y = batch
+        preds = self(x)
+        if self.num_classes == 2:
+            y = F.one_hot(y, num_classes=2).float()
+        
+        loss = nn.CrossEntropyLoss(preds, y)
+        acc = (torch.argmax(y,1) == torch.argmax(preds,1)) \
+                .type(torch.FloatTensor).mean()
 
         # logging
         self.log('train/accuracy', acc, on_epoch=True, prog_bar=True, logger=True)
@@ -240,7 +229,15 @@ class ResnetCIFAR(pl.LightningModule):
             preds : torch.Tensor
                 Predictions for the current batch.
         '''
-        loss, preds, acc = self._get_loss_and_metrics(batch)
+        #loss, preds, acc = self._get_loss_and_metrics(batch)
+        x, y = batch
+        preds = self(x)
+        if self.num_classes == 2:
+            y = F.one_hot(y, num_classes=2).float()
+        
+        loss = nn.CrossEntropyLoss(preds, y)
+        acc = (torch.argmax(y,1) == torch.argmax(preds,1)) \
+                .type(torch.FloatTensor).mean()
 
         # logging
         self.log('val/accuracy', acc, on_epoch=True, prog_bar=True, logger=True)
@@ -263,7 +260,15 @@ class ResnetCIFAR(pl.LightningModule):
             acc : torch.Tensor
                 Accuracy for the current batch.
         '''
-        _, _, acc = self._get_loss_and_metrics(batch)
+        #_, _, acc = self._get_loss_and_metrics(batch)
+        x, y = batch
+        preds = self(x)
+        if self.num_classes == 2:
+            y = F.one_hot(y, num_classes=2).float()
+        
+        loss = nn.CrossEntropyLoss(preds, y)
+        acc = (torch.argmax(y,1) == torch.argmax(preds,1)) \
+                .type(torch.FloatTensor).mean()
 
         # logging
         self.log(f'test_{dataset_idx}/accuracy', acc, on_step=True, prog_bar=True, logger=True)
