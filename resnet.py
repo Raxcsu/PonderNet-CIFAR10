@@ -312,3 +312,34 @@ class ResnetCIFAR(pl.LightningModule):
         # pondernet-{epoch:02d}-{val/loss:.2f}
         return [early_stopping, model_checkpoint]    
 
+    def _get_loss_and_metrics(self, batch):
+        '''
+            Returns the losses, the predictions, the accuracy and the number of steps.
+
+            Parameters
+            ----------
+            batch : (torch.Tensor, torch.Tensor)
+                Batch to process.
+
+            Returns
+            -------
+            loss : Loss
+                Loss object from which all three losses can be retrieved.
+
+            preds : torch.Tensor
+                Predictions for the current batch.
+
+            acc : torch.Tensor
+                Accuracy obtained with the current batch.
+        '''
+        # extract the batch
+        data, target = batch
+
+        # forward pass
+        preds = self(data)
+        
+        # calculate the loss
+        loss = nn.CrossEntropyLoss(preds, target)
+        acc = self.accuracy(preds, target)
+
+        return loss, preds, acc
