@@ -67,8 +67,8 @@ WEIGHT_DECAY = 5e-4
 N_ELEMS   = 512
 N_HIDDEN  = 100
 MAX_STEPS = 20
-LAMBDA_P  = 0.1
-BETA      = 0.01
+LAMBDA_P  = 0.1     # 0.2 - 0.4
+BETA      = 1    # 1 see what happen
 
 # ==============================================
 # CIFAR10 SETUP
@@ -76,6 +76,11 @@ BETA      = 0.01
 
 def get_transforms():
     # define transformations
+    train_transform = transforms.Compose([
+        transforms.RandomCrop(32, padding=4),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+    ])    
     transform_22 = transforms.Compose([
         transforms.RandomRotation(degrees=22.5),
         transforms.ToTensor(),
@@ -93,7 +98,7 @@ def get_transforms():
         transforms.ToTensor(),
     ])
 
-    train_transform = transform_22
+    train_transform = train_transform
     test_transform = [transform_22, transform_45, transform_67, transform_90]
 
     return train_transform, test_transform
@@ -127,6 +132,7 @@ model = PonderCIFAR(
     weight_decay=WEIGHT_DECAY)
 '''
 model = ResnetCIFAR(
+    num_classes=N_CLASSES,    
     lr=LR,
     momentum=MOMENTUM,
     weight_decay=WEIGHT_DECAY)

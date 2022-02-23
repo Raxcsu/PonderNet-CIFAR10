@@ -67,12 +67,12 @@ WEIGHT_DECAY = 5e-4
 N_ELEMS   = 512
 N_HIDDEN  = 100
 MAX_STEPS = 20
-LAMBDA_P  = 0.1
-BETA      = 0.01
+LAMBDA_P  = 0.1     # 0.2 - 0.4
+BETA      = 1    # 1 see what happen
 N_CLASSES = 100
 
 # ==============================================
-# CIFAR10 SETUP
+# CIFAR100 SETUP
 # ==============================================
 
 train_transform = transforms.Compose([
