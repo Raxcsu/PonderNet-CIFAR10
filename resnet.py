@@ -87,7 +87,7 @@ class Bottleneck(nn.Module):
 class ResNet(nn.Module):
 
     def __init__(self, block, num_blocks, num_classes=100):
-        
+
         super(ResNet, self).__init__()
         self.in_planes = 64
         self.conv1  = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
@@ -115,7 +115,7 @@ class ResNet(nn.Module):
         out = F.avg_pool2d(out, 4)
         out = out.view(out.size(0), -1)             # output of embedding
         out = self.linear(out)
-        return out    
+        return out
 
 def ResNet18():
     return ResNet(BasicBlock, [2, 2, 2, 2])
@@ -161,7 +161,7 @@ class ResnetCIFAR(pl.LightningModule):
     '''
 
     def __init__(self, num_classes, lr, momentum, weight_decay):
-        
+
         super().__init__()
 
         # attributes
@@ -182,10 +182,10 @@ class ResnetCIFAR(pl.LightningModule):
     def forward(self, img):
         # resnet
         x = self.core(img)
-        out = F.log_softmax(out, dim=1)
+        out = F.log_softmax(x, dim=1)
 
         return out
-    
+
     def training_step(self, batch, batch_idx):
         '''
             Perform the training step.
@@ -210,15 +210,15 @@ class ResnetCIFAR(pl.LightningModule):
         loss =  F.nll_loss(logits, target)
 
         preds = torch.argmax(logits, dim=1)
-        
+
         acc = self.accuracy(preds, target)
 
         # logging
-        self.log('train/accuracy', acc, on_epoch=True, prog_bar=True, logger=True)
-        self.log('train/total_loss', loss, on_epoch=True, prog_bar=True, logger=True)
+        self.log('train/accuracy', acc)
+        self.log('train/total_loss', loss)
 
         return loss
-    
+
     def validation_step(self, batch, batch_idx):
         '''
             Perform the validation step. Logs relevant metrics and returns
@@ -237,8 +237,8 @@ class ResnetCIFAR(pl.LightningModule):
         loss, preds, acc = self._get_loss_and_metrics(batch)
 
         # logging
-        self.log('val/accuracy', acc, on_epoch=True, prog_bar=True, logger=True)
-        self.log('val/total_loss', loss, on_epoch=True, prog_bar=True, logger=True)
+        self.log('val/accuracy', acc)
+        self.log('val/total_loss', loss)
 
         # for custom callback
         return preds
@@ -260,8 +260,8 @@ class ResnetCIFAR(pl.LightningModule):
         _, _, acc = self._get_loss_and_metrics(batch)
 
         # logging
-        self.log(f'test_{dataset_idx}/accuracy', acc, on_step=True, prog_bar=True, logger=True)
-    
+        self.log(f'test_{dataset_idx}/accuracy', acc)
+
     def configure_optimizers(self):
         '''
             Configure the optimizers and learning rate schedulers.
@@ -298,7 +298,7 @@ class ResnetCIFAR(pl.LightningModule):
                                            monitor ="val/accuracy",
                                            mode    ='max')
         # pondernet-{epoch:02d}-{val/loss:.2f}
-        return [early_stopping, model_checkpoint]    
+        return [early_stopping, model_checkpoint]
 
 
     def _get_loss_and_metrics(self, batch):
@@ -330,8 +330,8 @@ class ResnetCIFAR(pl.LightningModule):
         loss =  F.nll_loss(logits, target)
 
         preds = torch.argmax(logits, dim=1)
-        
+
         acc = self.accuracy(preds, target)
 
         return loss, preds, acc
-        
+
