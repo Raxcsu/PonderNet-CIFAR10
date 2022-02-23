@@ -69,6 +69,7 @@ N_HIDDEN  = 100
 MAX_STEPS = 20
 LAMBDA_P  = 0.1
 BETA      = 0.01
+NUM_CLASSES = 100
 
 # ==============================================
 # CIFAR10 SETUP
@@ -98,7 +99,7 @@ def get_transforms():
 
     return train_transform, test_transform
 
-train_transform, test_transform = get_transforms()    
+train_transform, test_transform = get_transforms()
 
 # ==============================================
 # RUN EXTRAPOLATION
@@ -127,12 +128,13 @@ model = PonderCIFAR(
     weight_decay=WEIGHT_DECAY)
 '''
 model = ResnetCIFAR(
+    num_classes=NUM_CLASSES,
     lr=LR,
     momentum=MOMENTUM,
     weight_decay=WEIGHT_DECAY)
 
 # setup logger
-logger = WandbLogger(project='PonderNet - CIFAR100', name='extrapolation-ResnetCIFAR', offline=False)
+logger = WandbLogger(project='PonderNet - CIFAR10', name='extrapolation-ResnetCIFAR', offline=False)
 logger.watch(model)
 
 trainer = Trainer(
