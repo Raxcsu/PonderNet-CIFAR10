@@ -515,7 +515,7 @@ class PonderCIFAR(pl.LightningModule):
         return {
             "optimizer": optimizer,
             "lr_scheduler": {
-                "scheduler": ReduceLROnPlateau(optimizer, mode='max', verbose=True),
+                "scheduler": ReduceLROnPlateau(optimizer, mode='max', verbose=True, threshold=1e-3),
                 "monitor": 'val/accuracy',
                 "interval": 'epoch',
                 "frequency": 1

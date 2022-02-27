@@ -68,7 +68,7 @@ N_ELEMS   = 512
 N_HIDDEN  = 100
 MAX_STEPS = 20
 LAMBDA_P  = 0.1     # 0.2 - 0.4
-BETA      = 0.1    # 1 see what happen
+BETA      = 1    # 1 see what happen
 N_CLASSES = 100
 
 # ==============================================
@@ -118,7 +118,7 @@ model = ResnetCIFAR(
     weight_decay=WEIGHT_DECAY)
 '''
 # setup logger
-logger = WandbLogger(project='PonderNet - CIFAR100', name='I-PonderNet-b0.1-ep100', offline=False)
+logger = WandbLogger(project='PonderNet - CIFAR100', name='I-PonderNet-b1-ep100', offline=False)
 logger.watch(model)
 
 trainer = Trainer(

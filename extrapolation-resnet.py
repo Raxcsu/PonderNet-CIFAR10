@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # //////////////////////////////////////////////
-# ///////////// INTERPOLATION TASK /////////////
+# ///////////// EXTRAPOLATION TASK /////////////
 # //////////////////////////////////////////////
 
 # ==============================================
@@ -68,28 +68,50 @@ N_ELEMS   = 512
 N_HIDDEN  = 100
 MAX_STEPS = 20
 LAMBDA_P  = 0.1     # 0.2 - 0.4
-BETA      = 0.1    # 1 see what happen
-N_CLASSES = 100
+BETA      = 1    # 1 see what happen
+NUM_CLASSES = 100
+
 
 # ==============================================
-# CIFAR100 SETUP
+# CIFAR10 SETUP
 # ==============================================
 
-train_transform = transforms.Compose([
-    transforms.RandomCrop(32, padding=4),
-    transforms.RandomHorizontalFlip(),
-    transforms.ToTensor(),
-])
+def get_transforms():
+    # define transformations
+    train_transform = transforms.Compose([
+        transforms.RandomCrop(32, padding=4),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+    ])
+    transform_22 = transforms.Compose([
+        transforms.RandomRotation(degrees=22.5),
+        transforms.ToTensor(),
+    ])
+    transform_45 = transforms.Compose([
+        transforms.RandomRotation(degrees=45),
+        transforms.ToTensor(),
+    ])
+    transform_67 = transforms.Compose([
+        transforms.RandomRotation(degrees=67.5),
+        transforms.ToTensor(),
+    ])
+    transform_90 = transforms.Compose([
+        transforms.RandomRotation(degrees=90),
+        transforms.ToTensor(),
+    ])
 
-test_transform = transforms.Compose([
-    transforms.ToTensor(),
-])
+    train_transform = train_transform
+    test_transform = [transform_22, transform_45, transform_67, transform_90]
+
+    return train_transform, test_transform
+
+train_transform, test_transform = get_transforms()
 
 # ==============================================
 # RUN EXTRAPOLATION
 # ==============================================
 
-# Load the CIFAR100 dataset with no rotations and train PonderNet on it.
+# Load the CIFAR10 dataset with no rotations and train PonderNet on it.
 # Make sure to edit the `WandbLogger` call so that you log the experiment
 # on your account's desired project.
 
@@ -100,7 +122,7 @@ cifar100_dm = CIFAR100_DataModule(
     test_transform=test_transform,
     batch_size=BATCH_SIZE)
 
-
+'''
 model = PonderCIFAR(
     n_elems=N_ELEMS,
     n_hidden=N_HIDDEN,
@@ -112,13 +134,13 @@ model = PonderCIFAR(
     weight_decay=WEIGHT_DECAY)
 '''
 model = ResnetCIFAR(
-    num_classes=N_CLASSES,
+    num_classes=NUM_CLASSES,
     lr=LR,
     momentum=MOMENTUM,
     weight_decay=WEIGHT_DECAY)
-'''
+
 # setup logger
-logger = WandbLogger(project='PonderNet - CIFAR100', name='I-PonderNet-b0.1-ep100', offline=False)
+logger = WandbLogger(project='PonderNet - CIFAR100', name='E-ResNet-ep100', offline=False)
 logger.watch(model)
 
 trainer = Trainer(

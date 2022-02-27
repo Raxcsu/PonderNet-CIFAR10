@@ -100,7 +100,7 @@ cifar100_dm = CIFAR100_DataModule(
     test_transform=test_transform,
     batch_size=BATCH_SIZE)
 
-
+'''
 model = PonderCIFAR(
     n_elems=N_ELEMS,
     n_hidden=N_HIDDEN,
@@ -116,9 +116,9 @@ model = ResnetCIFAR(
     lr=LR,
     momentum=MOMENTUM,
     weight_decay=WEIGHT_DECAY)
-'''
+
 # setup logger
-logger = WandbLogger(project='PonderNet - CIFAR100', name='I-PonderNet-b0.1-ep100', offline=False)
+logger = WandbLogger(project='PonderNet - CIFAR100', name='I-ResNet-ep100', offline=False)
 logger.watch(model)
 
 trainer = Trainer(

@@ -82,7 +82,7 @@ def get_transforms():
         transforms.RandomCrop(32, padding=4),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
-    ])    
+    ])
     transform_22 = transforms.Compose([
         transforms.RandomRotation(degrees=22.5),
         transforms.ToTensor(),
@@ -140,7 +140,7 @@ model = ResnetCIFAR(
     weight_decay=WEIGHT_DECAY)
 '''
 # setup logger
-logger = WandbLogger(project='PonderNet - CIFAR10', name='extrapolation-PonderNet-b0.1-ep100', offline=False)
+logger = WandbLogger(project='PonderNet - CIFAR100', name='E-PonderNet-b0.1-ep100', offline=False)
 logger.watch(model)
 
 trainer = Trainer(
