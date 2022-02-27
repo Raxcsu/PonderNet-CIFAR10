@@ -55,7 +55,7 @@ DATA_DIR = './data'
 
 # Trainer settings
 BATCH_SIZE = 128
-EPOCHS = 50
+EPOCHS = 100
 
 # Optimizer settings
 LR = 0.1        # 0.001ADAM
@@ -68,7 +68,7 @@ N_ELEMS   = 512
 N_HIDDEN  = 100
 MAX_STEPS = 20
 LAMBDA_P  = 0.1     # 0.2 - 0.4
-BETA      = 1    # 1 see what happen
+BETA      = 0.1    # 1 see what happen
 N_CLASSES = 100
 
 # ==============================================
@@ -100,7 +100,7 @@ cifar100_dm = CIFAR100_DataModule(
     test_transform=test_transform,
     batch_size=BATCH_SIZE)
 
-'''
+
 model = PonderCIFAR(
     n_elems=N_ELEMS,
     n_hidden=N_HIDDEN,
@@ -116,9 +116,9 @@ model = ResnetCIFAR(
     lr=LR,
     momentum=MOMENTUM,
     weight_decay=WEIGHT_DECAY)
-
+'''
 # setup logger
-logger = WandbLogger(project='PonderNet - CIFAR10', name='interpolation-ResnetCIFAR', offline=False)
+logger = WandbLogger(project='PonderNet - CIFAR10', name='interpolation-PonderNet-b0.1-ep100', offline=False)
 logger.watch(model)
 
 trainer = Trainer(
