@@ -6,3 +6,4 @@ wandb/*
 __pycache__/*
 model_checkpoint/*
 data/*
+CIFAR100_checkpoint/*

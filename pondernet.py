@@ -529,10 +529,10 @@ class PonderCIFAR(pl.LightningModule):
                                        mode='max',
                                        patience=100)
 
-        if not os.path.isdir('./model_checkpoint'):
-            os.mkdir('./model_checkpoint')
+        if not os.path.isdir('./CIFAR100_checkpoint'):
+            os.mkdir('./CIFAR100_checkpoint')
 
-        model_checkpoint = ModelCheckpoint(dirpath ='./model_checkpoint',
+        model_checkpoint = ModelCheckpoint(dirpath ='./CIFAR100_checkpoint',
                                            monitor ="val/accuracy",
                                            mode    ='max')
         # pondernet-{epoch:02d}-{val/loss:.2f}
