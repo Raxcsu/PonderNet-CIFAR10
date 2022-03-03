@@ -531,7 +531,7 @@ class PonderCIFAR(pl.LightningModule):
 
         model_checkpoint = ModelCheckpoint(dirpath ='CIFAR100_checkpoint/',
                                            monitor ="val/accuracy",
-                                           filename="pondernet-{epoch:02d}-{lambda_p:.2f}-{beta:.2f}",
+                                           filename="pondernet-{epoch:02d}-{self.lambda_p:.2f}-{self.beta:.2f}",
                                            mode    ='max')
         # pondernet-{epoch:02d}-{val/loss:.2f}
         return [early_stopping, model_checkpoint]
