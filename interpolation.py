@@ -100,7 +100,6 @@ cifar100_dm = CIFAR100_DataModule(
     test_transform=test_transform,
     batch_size=BATCH_SIZE)
 
-
 model = PonderCIFAR(
     n_elems=N_ELEMS,
     n_hidden=N_HIDDEN,

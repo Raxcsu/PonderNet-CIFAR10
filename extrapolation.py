@@ -153,7 +153,11 @@ trainer = Trainer(
     deterministic=True)                 # for reproducibility
 
 # fit the model
-trainer.fit(model, datamodule=cifar100_dm)
+#trainer.fit(model, datamodule=cifar100_dm)
+
+beta01 = "CIFAR100_checkpoint/pondernet-epoch=83-20220303-094437.ckpt"
+model = PonderCIFAR.load_from_checkpoint(beta01)
+print(model.hparams)
 
 # evaluate on the test set
 trainer.test(model, datamodule=cifar100_dm)
