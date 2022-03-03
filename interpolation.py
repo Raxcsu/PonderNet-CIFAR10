@@ -109,13 +109,15 @@ model = PonderCIFAR(
     beta=BETA,
     lr=LR,
     momentum=MOMENTUM,
-    weight_decay=WEIGHT_DECAY)
+    weight_decay=WEIGHT_DECAY,
+    epochs=EPOCHS)
 '''
 model = ResnetCIFAR(
     num_classes=N_CLASSES,
     lr=LR,
     momentum=MOMENTUM,
-    weight_decay=WEIGHT_DECAY)
+    weight_decay=WEIGHT_DECAY,
+    epochs=EPOCHS)
 '''
 # setup logger
 logger = WandbLogger(project='PonderNet - CIFAR100', name='I-PonderNet-b0.1-ep100', offline=False)

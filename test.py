@@ -99,7 +99,6 @@ cifar100_dm = CIFAR100_DataModule(
     train_transform=train_transform,
     test_transform=test_transform,
     batch_size=BATCH_SIZE)
-
 '''
 model = PonderCIFAR(
     n_elems=N_ELEMS,
@@ -109,13 +108,15 @@ model = PonderCIFAR(
     beta=BETA,
     lr=LR,
     momentum=MOMENTUM,
-    weight_decay=WEIGHT_DECAY)
+    weight_decay=WEIGHT_DECAY,
+    epochs=EPOCHS)
 
 model = ResnetCIFAR(
     num_classes=N_CLASSES,
     lr=LR,
     momentum=MOMENTUM,
-    weight_decay=WEIGHT_DECAY)
+    weight_decay=WEIGHT_DECAY,
+    epochs=EPOCHS)
 '''
 'pondernet-epoch=74-20220303-094605.ckpt'  'pondernet-epoch=83-20220303-094437.ckpt'
 path1 = "CIFAR100_checkpoint/pondernet-epoch=74-20220303-094605.ckpt"
