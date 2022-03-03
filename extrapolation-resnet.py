@@ -153,6 +153,7 @@ trainer = Trainer(
     deterministic=True)                 # for reproducibility
 
 # fit the model
+# resnet-20220303-175848-epoch=60.ckpt
 trainer.fit(model, datamodule=cifar100_dm)
 
 # evaluate on the test set
