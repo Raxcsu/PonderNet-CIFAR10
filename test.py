@@ -127,7 +127,9 @@ PonderCIFAR(
    momentum=MOMENTUM,
    weight_decay=WEIGHT_DECAY)
 
-model = PonderCIFAR.load_from_checkpoint("CIFAR100_checkpoint/epoch=60-step=21471-v1.ckpt")
+
+chk_path = "/CIFAR100_checkpoint/epoch=60-step=21471-v1.ckpt"
+model = PonderCIFAR.load_from_checkpoint(chk_path)
 print(model["hyper_parameters"])
 # prints the learning_rate you used in this checkpoint
 
