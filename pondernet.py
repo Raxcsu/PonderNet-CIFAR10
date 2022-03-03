@@ -9,6 +9,7 @@
 
 # import Libraries
 import os
+import time
 
 # torch imports
 import torch
@@ -527,11 +528,12 @@ class PonderCIFAR(pl.LightningModule):
         # we choose high patience sine we validate 4 times per epoch to have nice graphs
         early_stopping = EarlyStopping(monitor='val/accuracy',
                                        mode='max',
-                                       patience=6)
+                                       patience=100)
 
+        timestr = time.strftime("%Y%m%d-%H%M%S")
         model_checkpoint = ModelCheckpoint(dirpath ='CIFAR100_checkpoint/',
                                            monitor ="val/accuracy",
-                                           filename="pondernet-{epoch:02d}-{self.lambda_p:.2f}-{self.beta:.2f}",
+                                           filename="pondernet-{epoch:02d}-" + timestr,
                                            mode    ='max')
         # pondernet-{epoch:02d}-{val/loss:.2f}
         return [early_stopping, model_checkpoint]
