@@ -527,7 +527,7 @@ class PonderCIFAR(pl.LightningModule):
         # we choose high patience sine we validate 4 times per epoch to have nice graphs
         early_stopping = EarlyStopping(monitor='val/accuracy',
                                        mode='max',
-                                       patience=100)
+                                       patience=6)
 
         model_checkpoint = ModelCheckpoint(dirpath ='CIFAR100_checkpoint/',
                                            monitor ="val/accuracy",

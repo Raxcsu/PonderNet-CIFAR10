@@ -116,19 +116,14 @@ model = ResnetCIFAR(
     lr=LR,
     momentum=MOMENTUM,
     weight_decay=WEIGHT_DECAY)
+<<<<<<< HEAD
 '''
 
-chk_path = "/CIFAR100_checkpoint/epoch=60-step=21471-v1.ckpt"
-model = PonderCIFAR.load_from_checkpoint(chk_path,
-   n_elems=N_ELEMS,
-   n_hidden=N_HIDDEN,
-   max_steps=MAX_STEPS,
-   lambda_p=LAMBDA_P,
-   beta=BETA,
-   lr=LR,
-   momentum=MOMENTUM,
-   weight_decay=WEIGHT_DECAY)
-print(model["hyper_parameters"])
+chk_path = "CIFAR100_checkpoint/epoch=60-step=21471.ckpt"
+path = "model_checkpoint/epoch=83-step=29303.ckpt"
+model = PonderCIFAR.load_from_checkpoint(chk_path)
+print(model.beta)
+
 # prints the learning_rate you used in this checkpoint
 
 # fit the model
