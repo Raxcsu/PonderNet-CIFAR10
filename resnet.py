@@ -1,5 +1,6 @@
 # import Libraries
 import os
+import time
 
 # torch imports
 import torch
@@ -291,11 +292,10 @@ class ResnetCIFAR(pl.LightningModule):
                                        mode='max',
                                        patience=100)
 
-        if not os.path.isdir('./CIFAR100_checkpoint'):
-            os.mkdir('./CIFAR100_checkpoint')
-
-        model_checkpoint = ModelCheckpoint(dirpath ='./CIFAR100_checkpoint',
+        timestr = time.strftime("%Y%m%d-%H%M%S")
+        model_checkpoint = ModelCheckpoint(dirpath ='CIFAR100_checkpoint/',
                                            monitor ="val/accuracy",
+                                           filename="resnet-{epoch:02d}-" + timestr,
                                            mode    ='max')
         # pondernet-{epoch:02d}-{val/loss:.2f}
         return [early_stopping, model_checkpoint]

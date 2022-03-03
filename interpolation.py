@@ -55,7 +55,7 @@ DATA_DIR = './data'
 
 # Trainer settings
 BATCH_SIZE = 128
-EPOCHS = 10
+EPOCHS = 100
 
 # Optimizer settings
 LR = 0.1        # 0.001ADAM
