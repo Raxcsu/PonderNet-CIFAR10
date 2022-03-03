@@ -161,13 +161,10 @@ class ResnetCIFAR(pl.LightningModule):
             Linear module that generates the halting probability at each step.
     '''
 
-    def __init__(self, num_classes, lr, momentum, weight_decay):
+    def __init__(self, num_classes, lr, momentum, weight_decay, epochs):
 
         super().__init__()
 
-        # save hparams on W&B
-        self.save_hyperparameters()
-        
         # attributes
         self.num_classes = num_classes
         self.lr = lr
@@ -180,7 +177,8 @@ class ResnetCIFAR(pl.LightningModule):
         # metrics
         self.accuracy = torchmetrics.Accuracy()
 
-        
+        # save hparams on W&B
+        self.save_hyperparameters()        
 
     def forward(self, img):
         # resnet

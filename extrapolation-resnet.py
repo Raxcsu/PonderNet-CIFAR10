@@ -134,7 +134,7 @@ model = PonderCIFAR(
     weight_decay=WEIGHT_DECAY)
 '''
 model = ResnetCIFAR(
-    num_classes=NUM_CLASSES,
+    num_classes=N_CLASSES,
     lr=LR,
     momentum=MOMENTUM,
     weight_decay=WEIGHT_DECAY)
