@@ -161,7 +161,7 @@ class ResnetCIFAR(pl.LightningModule):
             Linear module that generates the halting probability at each step.
     '''
 
-    def __init__(self, num_classes, lr, momentum, weight_decay, epochs):
+    def __init__(self, num_classes, lr, momentum, weight_decay):
 
         super().__init__()
 

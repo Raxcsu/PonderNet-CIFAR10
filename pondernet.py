@@ -313,7 +313,7 @@ class PonderCIFAR(pl.LightningModule):
             Linear module that generates the halting probability at each step.
     '''
 
-    def __init__(self, n_elems, n_hidden, max_steps, lambda_p, beta, lr, momentum, weight_decay, epochs):
+    def __init__(self, n_elems, n_hidden, max_steps, lambda_p, beta, lr, momentum, weight_decay):
         
         super().__init__()
 
