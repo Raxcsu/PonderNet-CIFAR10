@@ -295,7 +295,7 @@ class ResnetCIFAR(pl.LightningModule):
         timestr = time.strftime("%Y%m%d-%H%M%S")
         model_checkpoint = ModelCheckpoint(dirpath ='CIFAR100_checkpoint/',
                                            monitor ="val/accuracy",
-                                           filename="resnet-{epoch:02d}-" + timestr,
+                                           filename=timestr + "-resnet-{epoch:02d}",
                                            mode    ='max')
         # pondernet-{epoch:02d}-{val/loss:.2f}
         return [early_stopping, model_checkpoint]
