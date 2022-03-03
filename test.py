@@ -118,12 +118,17 @@ model = ResnetCIFAR(
     weight_decay=WEIGHT_DECAY,
     epochs=EPOCHS)
 '''
+'pondernet-epoch=74-20220303-094605.ckpt'  'pondernet-epoch=83-20220303-094437.ckpt'
+path1 = "CIFAR100_checkpoint/pondernet-epoch=74-20220303-094605.ckpt"
+path2 = "CIFAR100_checkpoint/pondernet-epoch=83-20220303-094437.ckpt"
 
-path1 = "CIFAR100_checkpoint/pondernet-epoch=83-20220303-094437.ckpt"
-path = "model_checkpoint/epoch=83-step=29303.ckpt"
-path2 = "model_checkpoint/resnet-20220303-162754-epoch=04.ckpt"
 model = PonderCIFAR.load_from_checkpoint(path1)
-print(model.Accuracy())
+print(model.hparams)
+
+print("-------------------------------------")
+
+model = PonderCIFAR.load_from_checkpoint(path2)
+print(model.hparams)
 
 # prints the learning_rate you used in this checkpoint
 
