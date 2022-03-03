@@ -121,9 +121,8 @@ model = ResnetCIFAR(
 chk_path = "CIFAR100_checkpoint/resnet-epoch=10-20220303-094631.ckpt"
 path = "model_checkpoint/epoch=83-step=29303.ckpt"
 path2 = "model_checkpoint/resnet-epoch=02-20220303-102331.ckpt"
-path3 = "PonderNet - CIFAR100/1wslyyd5/checkpoints/resnet-epoch=03-20220303-095249.ckpt"
 model = PonderCIFAR.load_from_checkpoint(path3)
-print(model.beta)
+print(model.hparams)
 
 # prints the learning_rate you used in this checkpoint
 

@@ -533,7 +533,7 @@ class PonderCIFAR(pl.LightningModule):
         timestr = time.strftime("%Y%m%d-%H%M%S")
         model_checkpoint = ModelCheckpoint(dirpath ='CIFAR100_checkpoint/',
                                            monitor ="val/accuracy",
-                                           filename="pondernet-{epoch:02d}-" + timestr,
+                                           filename="pondernet-" + timestr + "-{epoch:02d}",
                                            mode    ='max')
         # pondernet-{epoch:02d}-{val/loss:.2f}
         return [early_stopping, model_checkpoint]

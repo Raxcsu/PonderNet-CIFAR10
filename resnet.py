@@ -165,6 +165,9 @@ class ResnetCIFAR(pl.LightningModule):
 
         super().__init__()
 
+        # save hparams on W&B
+        self.save_hyperparameters()
+        
         # attributes
         self.num_classes = num_classes
         self.lr = lr
@@ -177,8 +180,7 @@ class ResnetCIFAR(pl.LightningModule):
         # metrics
         self.accuracy = torchmetrics.Accuracy()
 
-        # save hparams on W&B
-        self.save_hyperparameters()
+        
 
     def forward(self, img):
         # resnet
@@ -295,7 +297,7 @@ class ResnetCIFAR(pl.LightningModule):
         timestr = time.strftime("%Y%m%d-%H%M%S")
         model_checkpoint = ModelCheckpoint(dirpath="model_checkpoint",
                                            monitor ="val/accuracy",
-                                           filename=timestr + "-resnet-{epoch:02d}",
+                                           filename="resnet-" + timestr + "-{epoch:02d}",
                                            mode    ='max')
         # pondernet-{epoch:02d}-{val/loss:.2f}
         return [early_stopping, model_checkpoint]
