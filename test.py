@@ -119,7 +119,7 @@ model = ResnetCIFAR(
 <<<<<<< HEAD
 '''
 
-chk_path = "CIFAR100_checkpoint/epoch=60-step=21471.ckpt"
+chk_path = "CIFAR100_checkpoint/pondernet-epoch=02-lambda_p=0.00-beta=0.00.ckpt"
 path = "model_checkpoint/epoch=83-step=29303.ckpt"
 model = PonderCIFAR.load_from_checkpoint(chk_path)
 print(model.beta)
