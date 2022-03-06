@@ -229,9 +229,73 @@ class CIFAR100_DataModule(pl.LightningDataModule):
 
     def test_dataloader(self):
         '''returns test dataloader(s)'''
-        if isinstance(self.cifar_test, CIFAR10):
+        if isinstance(self.cifar_test, CIFAR100):
             return DataLoader(self.cifar_test, batch_size=100, num_workers=2)
 
         cifar_test = [DataLoader(test_dataset, batch_size=100, num_workers=2)
+                      for test_dataset in self.cifar_test]
+        return cifar_test
+
+# ==============================================
+# CIFAR100C_DATAMODULE
+# ==============================================
+
+class CIFAR100C_DataModule(pl.LightningDataModule):
+    '''
+        https://zenodo.org/record/3555552#.YiS6w3qZOCo
+
+        Parameters
+        ----------
+        data_dir : str
+            Directory where CIFAR10 will be downloaded or taken from.
+
+        test_transform : [transform] or [[transform]]
+            List of transformations for the test dataset. Also accepts a list of
+            lists to validate on multiple datasets with different transforms.
+
+        batch_size : int
+            Batch size for both all dataloaders.
+    '''
+
+    def __init__(self, data_dir='data/', test_transform=None, batch_size=100, corruption, base_path):
+        
+        super().__init__()
+        
+        self.data_dir        = data_dir
+        self.batch_size      = batch_size
+        self.test_transform  = test_transform
+        self.corruption      = corruption
+        self.base_path       = base_path
+
+    def prepare_data(self):
+        '''called only once and on 1 GPU'''
+        # download data (train/val and test sets)
+        CIFAR100(self.data_dir, train=False, download=True)
+
+    def setup(self, stage=None):
+        '''
+            Called on each GPU separately - stage defines if we are
+            at fit, validate, test or predict step.
+        '''
+        # we set up only relevant datasets when stage is specified
+
+        if stage == 'test' or stage is None:
+            if self.test_transform is None or isinstance(self.test_transform, transforms.Compose):
+                self.cifar_test = CIFAR100(self.data_dir,
+                                        train=False,
+                                        transform=(self.test_transform or self.default_transform))
+            else:
+                self.cifar_test = [CIFAR100(self.data_dir,
+                                        train=False,
+                                        transform=test_transform)
+                                    for test_transform in self.test_transform]
+
+    def test_dataloader(self):
+        '''returns test dataloader(s)'''
+
+        test_dataset.data = np.load(self.base_path + self.corruption + '.npy')
+        test_dataset.targets = torch.LongTensor(np.load(self.base_path + 'labels.npy'))
+        
+        cifar_test = [DataLoader(test_dataset, batch_size=100, num_workers=0, shuffle=False, num_workers=0, pin_memory=True)
                       for test_dataset in self.cifar_test]
         return cifar_test

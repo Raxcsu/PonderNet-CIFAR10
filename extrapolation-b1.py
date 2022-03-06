@@ -140,7 +140,7 @@ model = ResnetCIFAR(
     weight_decay=WEIGHT_DECAY)
 '''
 # setup logger
-logger = WandbLogger(project='PonderNet - CIFAR100', name='E-PonderNet-b1-ep100', offline=False)
+logger = WandbLogger(project='CIFAR100C - PonderNet', name='E-PonderNet-b1-ep100', offline=False)
 logger.watch(model)
 
 trainer = Trainer(

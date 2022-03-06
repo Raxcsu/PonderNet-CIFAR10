@@ -496,11 +496,15 @@ class PonderCIFAR(pl.LightningModule):
             steps : torch.Tensor
                 Average number of steps for the current batch.
         '''
-        _, _, acc, steps = self._get_loss_and_metrics(batch)
+        loss, _, acc, steps = self._get_loss_and_metrics(batch)
 
         # logging
         self.log(f'test_{dataset_idx}/steps', steps)
         self.log(f'test_{dataset_idx}/accuracy', acc)
+        self.log(f'test_{dataset_idx}/total_loss', loss.get_total_loss())
+
+        # for custom callback
+        return loss.get_total_loss(), acc
 
     def configure_optimizers(self):
         '''
