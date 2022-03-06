@@ -122,11 +122,12 @@ def main(argv=None):
         help="Choose one of these options. CORRUPTIONS: gaussian_noise, shot_noise, impulse_noise, defocus_blur, glass_blur, motion_blur, zoom_blur, snow, frost, fog, brightness, contrast, elastic_transform, pixelate, jpeg_compression")
 
     # initialize datamodule and model
-    cifar100_dm = CIFAR100_DataModule(
+    cifar100_dm = CIFAR100C_DataModule(
+        corruption=args.corruption,
         data_dir=DATA_DIR,
-        train_transform=train_transform,
         test_transform=test_transform,
-        batch_size=BATCH_SIZE)
+        batch_size=BATCH_SIZE,
+        base_path=BASE_PATH)
 
     NAME = 'E-PonderNet-b0.1-ep100-' + args.corruption
     print(NAME)
