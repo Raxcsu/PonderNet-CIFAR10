@@ -308,6 +308,7 @@ class CIFAR100C_DataModule(pl.LightningDataModule):
             cifar_test.append(test)
 
             print(corruption + " --- " + str(len(test)))
+<<<<<<< HEAD
         '''
 
         self.cifar_test.data = np.load(self.base_path + self.corruption + '.npy')
@@ -316,3 +317,7 @@ class CIFAR100C_DataModule(pl.LightningDataModule):
         cifar_test = [DataLoader(self.cifar_test, batch_size=100, num_workers=2, shuffle=False, pin_memory=True)]
 
         return cifar_test
+=======
+        print(len(cifar_test))
+        return cifar_test
+>>>>>>> e2859b818b3ce2353debde5f7bae45d0c1f46b80
