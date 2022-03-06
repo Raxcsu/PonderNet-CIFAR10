@@ -155,8 +155,9 @@ trainer = Trainer(
 # fit the model
 #trainer.fit(model, datamodule=cifar100_dm)
 
-beta1 = "CIFAR100_checkpoint/pondernet-epoch=74-20220303-094605.ckpt"
-model = PonderCIFAR.load_from_checkpoint(beta1)
+# training model with beta = 1
+path = "CIFAR100_checkpoint/pondernet-epoch=74-20220303-094605.ckpt"
+model = PonderCIFAR.load_from_checkpoint(path)
 print(model.hparams)
 
 # evaluate on the test set
