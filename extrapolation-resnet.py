@@ -111,6 +111,11 @@ def main():
             corruption=corruption,
             base_path=BASE_PATH)
 
+        # training model with resnet
+        path = "CIFAR100_checkpoint/resnet-20220303-175848-epoch=60.ckpt"
+        model = PonderCIFAR.load_from_checkpoint(path)
+        print(model.hparams)
+        
         NAME = 'E-ResNet-ep100' + corruption
 
         # setup logger
@@ -128,11 +133,6 @@ def main():
 
         # fit the model
         # trainer.fit(model, datamodule=cifar100_dm)
-
-        # training model with resnet
-        path = "CIFAR100_checkpoint/resnet-20220303-175848-epoch=60.ckpt"
-        model = PonderCIFAR.load_from_checkpoint(path)
-        print(model.hparams)
 
         # evaluate on the test set
         trainer.test(model, datamodule=cifar100_dm)
