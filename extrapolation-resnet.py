@@ -86,7 +86,7 @@ CORRUPTIONS = [
 ]
 
 test_transform = transforms.Compose([transforms.ToTensor(),])
-
+'''
 def get_transforms():
     # define transformations
     train_transform = transforms.Compose([
@@ -117,7 +117,7 @@ def get_transforms():
     return train_transform, test_transform
 
 train_transform, test_transform = get_transforms()
-
+'''
 # ==============================================
 # RUN EXTRAPOLATION
 # ==============================================
@@ -171,7 +171,7 @@ def main():
 
         # evaluate on the test set
         trainer.test(model, datamodule=cifar100_dm)
-
+'''
     # initialize datamodule and model
     cifar100_dm = CIFAR100C_DataModule(
         corruption=CORRUPTIONS,
@@ -180,11 +180,12 @@ def main():
         batch_size=BATCH_SIZE,
         base_path=BASE_PATH)
     '''
-    cifar100_dm = CIFAR100_DataModule(
+    cifar100_dm = CIFAR100C_DataModule(
         data_dir=DATA_DIR,
         train_transform=train_transform,
         test_transform=test_transform,
-        batch_size=BATCH_SIZE)    
+        batch_size=BATCH_SIZE)
+'''
     NAME = 'E-ResNet-ep100-'# + corruption
 
     print(NAME)

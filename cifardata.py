@@ -308,4 +308,5 @@ class CIFAR100C_DataModule(pl.LightningDataModule):
             cifar_test.append(test)
 
             print(corruption + " --- " + str(len(test)))
+        print(len(cifar_test))
         return cifar_test
