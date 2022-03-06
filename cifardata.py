@@ -286,23 +286,22 @@ class CIFAR100C_DataModule(pl.LightningDataModule):
                                         train=False,
                                         transform=(self.test_transform or self.default_transform))
             else:
-                self.cifar_test = [CIFAR100(self.data_dir,
-                                        train=False,
-                                        transform=test_transform)
-                                    for test_transform in self.test_transform]
+                for corruption in self.corruption:
+                        
+                    self.cifar_test = [CIFAR100(self.data_dir,
+                                            train=False,
+                                            transform=test_transform)
+                                        for test_transform in self.test_transform]
 
     def test_dataloader(self):
         '''returns test dataloader(s)'''
 
+        self.cifar_test.data = np.load(self.base_path + self.corruption + '.npy')
+        self.cifar_test.targets = torch.LongTensor(np.load(self.base_path + 'labels.npy'))
 
         if isinstance(self.cifar_test, CIFAR100):
             return DataLoader(self.cifar_test, batch_size=100, num_workers=0, shuffle=False, pin_memory=True)
 
-        for corruption in self.corruption:
-            self.cifar_test.data = np.load(self.base_path + self.corruption + '.npy')
-            self.cifar_test.targets = torch.LongTensor(np.load(self.base_path + 'labels.npy'))
-
-            cifar_test = [DataLoader(test_dataset, batch_size=100, num_workers=0, shuffle=False, pin_memory=True)
-                          for test_dataset in self.cifar_test]
-
+        cifar_test = [DataLoader(test_dataset, batch_size=100, num_workers=0, shuffle=False, pin_memory=True)
+                      for test_dataset in self.cifar_test]
         return cifar_test
