@@ -298,6 +298,9 @@ class CIFAR100C_DataModule(pl.LightningDataModule):
 
     def test_dataloader(self):
         '''returns test dataloader(s)'''
-        cifar_test = [DataLoader(test_dataset, batch_size=100, num_workers=0, shuffle=False, pin_memory=True)
+        if isinstance(self.cifar_test, CIFAR100):
+            return DataLoader(self.cifar_test, batch_size=100, num_workers=2, shuffle=False, pin_memory=True)
+
+        cifar_test = [DataLoader(test_dataset, batch_size=100, num_workers=2, shuffle=False, pin_memory=True)
                       for test_dataset in self.cifar_test]
         return cifar_test
