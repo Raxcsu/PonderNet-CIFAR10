@@ -257,7 +257,7 @@ class CIFAR100C_DataModule(pl.LightningDataModule):
             Batch size for both all dataloaders.
     '''
 
-    def __init__(self, data_dir='data/', test_transform=None, batch_size=100, corruption, base_path):
+    def __init__(self, data_dir='data/', test_transform=None, batch_size=100, corruption='gaussian_noise', base_path='data/CIFAR100-C/CIFAR-100-C/'):
         
         super().__init__()
         
@@ -295,7 +295,7 @@ class CIFAR100C_DataModule(pl.LightningDataModule):
 
         test_dataset.data = np.load(self.base_path + self.corruption + '.npy')
         test_dataset.targets = torch.LongTensor(np.load(self.base_path + 'labels.npy'))
-        
+
         cifar_test = [DataLoader(test_dataset, batch_size=100, num_workers=0, shuffle=False, num_workers=0, pin_memory=True)
                       for test_dataset in self.cifar_test]
         return cifar_test
