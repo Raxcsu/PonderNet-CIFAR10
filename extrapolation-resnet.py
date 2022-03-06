@@ -143,7 +143,7 @@ def main():
     '''
     # initialize datamodule and model
     cifar100_dm = CIFAR100C_DataModule(
-        corruption=corruption,
+        corruption=CORRUPTIONS,
         data_dir=DATA_DIR,
         test_transform=test_transform,
         batch_size=BATCH_SIZE,
