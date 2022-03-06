@@ -258,7 +258,7 @@ class CIFAR100C_DataModule(pl.LightningDataModule):
             Batch size for both all dataloaders.
     '''
 
-    def __init__(self, data_dir='data/', test_transform=None, batch_size=100, corruption='gaussian_noise', base_path='data/CIFAR100-C/CIFAR-100-C/'):
+    def __init__(self, corruption, data_dir='data/', test_transform=None, batch_size=100, base_path='data/CIFAR100-C/CIFAR-100-C/'):
         
         super().__init__()
         

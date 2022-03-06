@@ -106,10 +106,10 @@ def main():
     for corruption in CORRUPTIONS:
         # initialize datamodule and model
         cifar100_dm = CIFAR100C_DataModule(
+            corruption=corruption,
             data_dir=DATA_DIR,
             test_transform=test_transform,
             batch_size=BATCH_SIZE,
-            corruption=corruption,
             base_path=BASE_PATH)
 
         # training model with resnet
@@ -117,7 +117,9 @@ def main():
         model = ResnetCIFAR.load_from_checkpoint(path)
         print(model.hparams)
         
-        NAME = 'E-ResNet-ep100' + corruption
+        NAME = 'E-ResNet-ep100-' + corruption
+
+        print(NAME)
 
         # setup logger
         logger = WandbLogger(project='CIFAR100C', name=NAME, offline=False)
