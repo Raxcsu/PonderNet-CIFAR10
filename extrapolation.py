@@ -137,7 +137,7 @@ def main(argv=None):
     print(NAME)
 
     # setup logger
-    logger = WandbLogger(project='CIFAR100C - PonderNet', name=NAME, offline=False)
+    logger = WandbLogger(project='CIFAR100C', name=NAME, offline=False)
     logger.watch(model)
 
     trainer = Trainer(

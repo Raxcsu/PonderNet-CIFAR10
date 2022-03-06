@@ -500,7 +500,7 @@ class PonderCIFAR(pl.LightningModule):
 
         # logging
         self.log(f'test_{dataset_idx}/steps', steps)
-        self.log(f'test_{dataset_idx}/accuracy', acc)
+        self.log(f'test_{dataset_idx}/acc', acc)
         self.log(f'test_{dataset_idx}/total_loss', loss.get_total_loss())
 
         # for custom callback
