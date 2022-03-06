@@ -76,6 +76,13 @@ NUM_CLASSES = 100
 # CIFAR10 SETUP
 # ==============================================
 
+CORRUPTIONS = [
+    'gaussian_noise', 'shot_noise', 'impulse_noise', 'defocus_blur',
+    'glass_blur', 'motion_blur', 'zoom_blur', 'snow', 'frost', 'fog',
+    'brightness', 'contrast', 'elastic_transform', 'pixelate',
+    'jpeg_compression'
+]
+
 def get_transforms():
     # define transformations
     train_transform = transforms.Compose([
@@ -140,7 +147,7 @@ model = ResnetCIFAR(
     weight_decay=WEIGHT_DECAY)
 '''
 # setup logger
-logger = WandbLogger(project='PonderNet - CIFAR100', name='E-PonderNet-b0.1-ep100', offline=False)
+logger = WandbLogger(project='CIFAR100C - PonderNet', name='E-PonderNet-b0.1-ep100', offline=False)
 logger.watch(model)
 
 trainer = Trainer(

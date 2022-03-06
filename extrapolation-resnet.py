@@ -52,9 +52,10 @@ wandb.login()
 # ==============================================
 
 DATA_DIR = './data'
+BASE_PATH = 'data/CIFAR100-C/CIFAR-100-C/'
 
 # Trainer settings
-BATCH_SIZE = 128
+BATCH_SIZE = 100 #128
 EPOCHS = 100
 
 # Optimizer settings
@@ -73,39 +74,17 @@ NUM_CLASSES = 100
 
 
 # ==============================================
-# CIFAR10 SETUP
+# CIFAR100-C SETUP
 # ==============================================
 
-def get_transforms():
-    # define transformations
-    train_transform = transforms.Compose([
-        transforms.RandomCrop(32, padding=4),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-    ])
-    transform_22 = transforms.Compose([
-        transforms.RandomRotation(degrees=22.5),
-        transforms.ToTensor(),
-    ])
-    transform_45 = transforms.Compose([
-        transforms.RandomRotation(degrees=45),
-        transforms.ToTensor(),
-    ])
-    transform_67 = transforms.Compose([
-        transforms.RandomRotation(degrees=67.5),
-        transforms.ToTensor(),
-    ])
-    transform_90 = transforms.Compose([
-        transforms.RandomRotation(degrees=90),
-        transforms.ToTensor(),
-    ])
+CORRUPTIONS = [
+    'gaussian_noise', 'shot_noise', 'impulse_noise', 'defocus_blur',
+    'glass_blur', 'motion_blur', 'zoom_blur', 'snow', 'frost', 'fog',
+    'brightness', 'contrast', 'elastic_transform', 'pixelate',
+    'jpeg_compression'
+]
 
-    train_transform = train_transform
-    test_transform = [transform_22, transform_45, transform_67, transform_90]
-
-    return train_transform, test_transform
-
-train_transform, test_transform = get_transforms()
+test_transform = transforms.Compose([transforms.ToTensor(),])
 
 # ==============================================
 # RUN EXTRAPOLATION
@@ -115,52 +94,49 @@ train_transform, test_transform = get_transforms()
 # Make sure to edit the `WandbLogger` call so that you log the experiment
 # on your account's desired project.
 
-# initialize datamodule and model
-cifar100_dm = CIFAR100_DataModule(
-    data_dir=DATA_DIR,
-    train_transform=train_transform,
-    test_transform=test_transform,
-    batch_size=BATCH_SIZE)
-
-'''
-model = PonderCIFAR(
-    n_elems=N_ELEMS,
-    n_hidden=N_HIDDEN,
-    max_steps=MAX_STEPS,
-    lambda_p=LAMBDA_P,
-    beta=BETA,
-    lr=LR,
-    momentum=MOMENTUM,
-    weight_decay=WEIGHT_DECAY)
-'''
 model = ResnetCIFAR(
-    num_classes=N_CLASSES,
-    lr=LR,
-    momentum=MOMENTUM,
-    weight_decay=WEIGHT_DECAY)
+        num_classes=N_CLASSES,
+        lr=LR,
+        momentum=MOMENTUM,
+        weight_decay=WEIGHT_DECAY)
 
-# setup logger
-logger = WandbLogger(project='PonderNet - CIFAR100', name='E-ResNet-ep100', offline=False)
-logger.watch(model)
+def main():
 
-trainer = Trainer(
-    logger=logger,                      # W&B integration
-    gpus=-1,                            # use all available GPU's
-    max_epochs=EPOCHS,                  # maximum number of epochs
-    gradient_clip_val=GRAD_NORM_CLIP,   # gradient clipping
-    val_check_interval=0.25,            # validate 4 times per epoch
-    precision=16,                       # train in half precision
-    deterministic=True)                 # for reproducibility
+    for corruption in CORRUPTIONS:
+        # initialize datamodule and model
+        cifar100_dm = CIFAR100C_DataModule(
+            data_dir=DATA_DIR,
+            test_transform=test_transform,
+            batch_size=BATCH_SIZE,
+            corruption=corruption,
+            base_path=BASE_PATH)
 
-# fit the model
-# trainer.fit(model, datamodule=cifar100_dm)
+        NAME = 'E-ResNet-ep100' + corruption
 
-# training model with resnet
-path = "CIFAR100_checkpoint/resnet-20220303-175848-epoch=60.ckpt"
-model = PonderCIFAR.load_from_checkpoint(path)
-print(model.hparams)
+        # setup logger
+        logger = WandbLogger(project='CIFAR100C', name=NAME, offline=False)
+        logger.watch(model)
 
-# evaluate on the test set
-trainer.test(model, datamodule=cifar100_dm)
+        trainer = Trainer(
+            logger=logger,                      # W&B integration
+            gpus=-1,                            # use all available GPU's
+            max_epochs=EPOCHS,                  # maximum number of epochs
+            gradient_clip_val=GRAD_NORM_CLIP,   # gradient clipping
+            val_check_interval=0.25,            # validate 4 times per epoch
+            precision=16,                       # train in half precision
+            deterministic=True)                 # for reproducibility
 
-wandb.finish()
+        # fit the model
+        # trainer.fit(model, datamodule=cifar100_dm)
+
+        # training model with resnet
+        path = "CIFAR100_checkpoint/resnet-20220303-175848-epoch=60.ckpt"
+        model = PonderCIFAR.load_from_checkpoint(path)
+        print(model.hparams)
+
+        # evaluate on the test set
+        trainer.test(model, datamodule=cifar100_dm)
+
+if __name__ == '__main__':
+    main()
+    wandb.finish()
