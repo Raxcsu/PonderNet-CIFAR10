@@ -14,6 +14,7 @@
 # import Libraries
 import os
 import numpy as np
+from argparse import ArgumentParser
 
 # torch imports
 import torch
@@ -87,37 +88,6 @@ CORRUPTIONS = [
 
 test_transform = transforms.Compose([transforms.ToTensor(),])
 
-def get_transforms():
-    # define transformations
-    train_transform = transforms.Compose([
-        transforms.RandomCrop(32, padding=4),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-    ])
-    transform_22 = transforms.Compose([
-        transforms.RandomRotation(degrees=22.5),
-        transforms.ToTensor(),
-    ])
-    transform_45 = transforms.Compose([
-        transforms.RandomRotation(degrees=45),
-        transforms.ToTensor(),
-    ])
-    transform_67 = transforms.Compose([
-        transforms.RandomRotation(degrees=67.5),
-        transforms.ToTensor(),
-    ])
-    transform_90 = transforms.Compose([
-        transforms.RandomRotation(degrees=90),
-        transforms.ToTensor(),
-    ])
-
-    train_transform = train_transform
-    test_transform = [transform_22, transform_45, transform_67, transform_90]
-
-    return train_transform, test_transform
-
-train_transform, test_transform = get_transforms()
-
 # ==============================================
 # RUN EXTRAPOLATION
 # ==============================================
@@ -137,55 +107,29 @@ path = "CIFAR100_checkpoint/resnet-20220303-175848-epoch=60.ckpt"
 model = ResnetCIFAR.load_from_checkpoint(path)
 print(model.hparams)
 
-def main():
-    '''
-    for corruption in CORRUPTIONS:
+def main(argv=None):
 
-        # initialize datamodule and model
-        cifar100_dm = CIFAR100C_DataModule(
-            corruption=corruption,
-            data_dir=DATA_DIR,
-            test_transform=test_transform,
-            batch_size=BATCH_SIZE,
-            base_path=BASE_PATH)
-        
-        NAME = 'E-ResNet-ep100-' + corruption
+    parser = ArgumentParser()
 
-        print(NAME)
+    parser.add_argument(
+        "--corruption",
+        type=str,
+        default='gaussian_noise',
+        help="Choose one of these options. CORRUPTIONS: gaussian_noise, shot_noise, impulse_noise, defocus_blur, glass_blur, motion_blur, zoom_blur, snow, frost, fog, brightness, contrast, elastic_transform, pixelate, jpeg_compression")
 
-        # setup logger
-        logger = WandbLogger(project='CIFAR100C', name=NAME, offline=False)
-        logger.watch(model)
-
-        trainer = Trainer(
-            logger=logger,                      # W&B integration
-            gpus=-1,                            # use all available GPU's
-            max_epochs=EPOCHS,                  # maximum number of epochs
-            gradient_clip_val=GRAD_NORM_CLIP,   # gradient clipping
-            val_check_interval=0.25,            # validate 4 times per epoch
-            precision=16,                       # train in half precision
-            deterministic=True)                 # for reproducibility
-
-        # fit the model
-        # trainer.fit(model, datamodule=cifar100_dm)
-
-        # evaluate on the test set
-        trainer.test(model, datamodule=cifar100_dm)
+    # Parameters
+    args = parser.parse_args(argv)
+    print(args)
 
     # initialize datamodule and model
     cifar100_dm = CIFAR100C_DataModule(
-        corruption=CORRUPTIONS,
+        corruption=args.corruption,
         data_dir=DATA_DIR,
         test_transform=test_transform,
         batch_size=BATCH_SIZE,
         base_path=BASE_PATH)
-    '''
-    cifar100_dm = CIFAR100_DataModule(
-        data_dir=DATA_DIR,
-        train_transform=train_transform,
-        test_transform=test_transform,
-        batch_size=BATCH_SIZE)    
-    NAME = 'E-ResNet-ep100-'# + corruption
+
+    NAME = 'E-ResNet-ep100-' + args.corruption
 
     print(NAME)
 

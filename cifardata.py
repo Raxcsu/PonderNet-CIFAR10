@@ -235,7 +235,6 @@ class CIFAR100_DataModule(pl.LightningDataModule):
 
         cifar_test = [DataLoader(test_dataset, batch_size=100, num_workers=2)
                       for test_dataset in self.cifar_test]
-        print(len(cifar_test))
         return cifar_test
 
 # ==============================================
@@ -297,7 +296,8 @@ class CIFAR100C_DataModule(pl.LightningDataModule):
 
 #        if isinstance(self.cifar_test, CIFAR100):
 #            return DataLoader(self.cifar_test, batch_size=100, num_workers=2, shuffle=False, pin_memory=True)
-
+        
+        '''
         cifar_test = []
 
         for corruption in self.corruption:
@@ -308,4 +308,11 @@ class CIFAR100C_DataModule(pl.LightningDataModule):
             cifar_test.append(test)
 
             print(corruption + " --- " + str(len(test)))
+        '''
+
+        self.cifar_test.data = np.load(self.base_path + self.corruption + '.npy')
+        self.cifar_test.targets = torch.LongTensor(np.load(self.base_path + 'labels.npy'))
+
+        cifar_test = [DataLoader(self.cifar_test, batch_size=100, num_workers=2, shuffle=False, pin_memory=True)]
+
         return cifar_test

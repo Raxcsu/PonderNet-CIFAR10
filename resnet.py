@@ -258,14 +258,14 @@ class ResnetCIFAR(pl.LightningModule):
             acc : torch.Tensor
                 Accuracy for the current batch.
         '''
-        loss, _, acc = self._get_loss_and_metrics(batch)
+        _, _, acc = self._get_loss_and_metrics(batch)
 
         # logging
         self.log(f'test_{dataset_idx}/accuracy', acc)
         # self.log(f'test_{dataset_idx}/total_loss', loss.get_total_loss())
 
         # for custom callback
-        return loss, acc
+        return acc
 
     def configure_optimizers(self):
         '''

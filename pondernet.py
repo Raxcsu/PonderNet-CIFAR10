@@ -504,7 +504,7 @@ class PonderCIFAR(pl.LightningModule):
         self.log(f'test_{dataset_idx}/total_loss', loss.get_total_loss())
 
         # for custom callback
-        return loss.get_total_loss(), acc
+        return acc
 
     def configure_optimizers(self):
         '''
