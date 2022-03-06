@@ -8,6 +8,7 @@
 
 # import Libraries
 import os
+import numpy as np
 
 # torch imports
 import torch
