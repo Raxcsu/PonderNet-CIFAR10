@@ -95,7 +95,7 @@ test_transform = transforms.Compose([transforms.ToTensor(),])
 # on your account's desired project.
 
 model = ResnetCIFAR(
-        num_classes=N_CLASSES,
+        num_classes=NUM_CLASSES,
         lr=LR,
         momentum=MOMENTUM,
         weight_decay=WEIGHT_DECAY)
