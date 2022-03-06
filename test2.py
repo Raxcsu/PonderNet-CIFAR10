@@ -73,4 +73,5 @@ cifar100_dm = CIFAR100_DataModule(
     test_transform=test_transform,
     batch_size=BATCH_SIZE)
 
-print(cifar100_dm.targets)
+#print(dir(cifar100_dm))
+print(cifar100_dm.test_dataloader[0][1])
