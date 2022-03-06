@@ -101,8 +101,13 @@ model = ResnetCIFAR(
         momentum=MOMENTUM,
         weight_decay=WEIGHT_DECAY)
 
-def main():
+# training model with resnet
+path = "CIFAR100_checkpoint/resnet-20220303-175848-epoch=60.ckpt"
+model = ResnetCIFAR.load_from_checkpoint(path)
+print(model.hparams)
 
+def main():
+    '''
     for corruption in CORRUPTIONS:
         # initialize datamodule and model
         cifar100_dm = CIFAR100C_DataModule(
@@ -111,11 +116,6 @@ def main():
             test_transform=test_transform,
             batch_size=BATCH_SIZE,
             base_path=BASE_PATH)
-
-        # training model with resnet
-        path = "CIFAR100_checkpoint/resnet-20220303-175848-epoch=60.ckpt"
-        model = ResnetCIFAR.load_from_checkpoint(path)
-        print(model.hparams)
         
         NAME = 'E-ResNet-ep100-' + corruption
 
@@ -139,7 +139,37 @@ def main():
 
         # evaluate on the test set
         trainer.test(model, datamodule=cifar100_dm)
+        '''
+    cifar100_dm = CIFAR100C_DataModule(
+            corruption=CORRUPTIONS,
+            data_dir=DATA_DIR,
+            test_transform=test_transform,
+            batch_size=BATCH_SIZE,
+            base_path=BASE_PATH)
+        
+    NAME = 'E-ResNet-ep100-' + corruption
+
+    print(NAME)
+
+    # setup logger
+    logger = WandbLogger(project='CIFAR100C', name=NAME, offline=False)
+    logger.watch(model)
+
+    trainer = Trainer(
+        logger=logger,                      # W&B integration
+        gpus=-1,                            # use all available GPU's
+        max_epochs=EPOCHS,                  # maximum number of epochs
+        gradient_clip_val=GRAD_NORM_CLIP,   # gradient clipping
+        val_check_interval=0.25,            # validate 4 times per epoch
+        precision=16,                       # train in half precision
+        deterministic=True)                 # for reproducibility
+
+    # fit the model
+    # trainer.fit(model, datamodule=cifar100_dm)
+
+    # evaluate on the test set
+    trainer.test(model, datamodule=cifar100_dm)
+    wandb.finish()
 
 if __name__ == '__main__':
     main()
-    wandb.finish()
