@@ -147,7 +147,7 @@ def main():
             batch_size=BATCH_SIZE,
             base_path=BASE_PATH)
         
-    NAME = 'E-ResNet-ep100-' + corruption
+    NAME = 'E-ResNet-ep100-'
 
     print(NAME)
 
