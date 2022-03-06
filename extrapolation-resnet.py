@@ -153,8 +153,12 @@ trainer = Trainer(
     deterministic=True)                 # for reproducibility
 
 # fit the model
-# resnet-20220303-175848-epoch=60.ckpt
-trainer.fit(model, datamodule=cifar100_dm)
+# trainer.fit(model, datamodule=cifar100_dm)
+
+# training model with resnet
+path = "CIFAR100_checkpoint/resnet-20220303-175848-epoch=60.ckpt"
+model = PonderCIFAR.load_from_checkpoint(path)
+print(model.hparams)
 
 # evaluate on the test set
 trainer.test(model, datamodule=cifar100_dm)
