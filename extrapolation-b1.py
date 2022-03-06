@@ -121,6 +121,10 @@ def main(argv=None):
         default='gaussian_noise',
         help="Choose one of these options. CORRUPTIONS: gaussian_noise, shot_noise, impulse_noise, defocus_blur, glass_blur, motion_blur, zoom_blur, snow, frost, fog, brightness, contrast, elastic_transform, pixelate, jpeg_compression")
 
+    # Parameters
+    args = parser.parse_args(argv)
+    print(args)
+
     # initialize datamodule and model
     cifar100_dm = CIFAR100C_DataModule(
         corruption=args.corruption,
