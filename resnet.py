@@ -262,10 +262,10 @@ class ResnetCIFAR(pl.LightningModule):
 
         # logging
         self.log(f'test_{dataset_idx}/accuracy', acc)
-        self.log(f'test_{dataset_idx}/total_loss', loss.get_total_loss())
+        # self.log(f'test_{dataset_idx}/total_loss', loss.get_total_loss())
 
         # for custom callback
-        return loss.get_total_loss(), acc
+        return loss, acc
 
     def configure_optimizers(self):
         '''
