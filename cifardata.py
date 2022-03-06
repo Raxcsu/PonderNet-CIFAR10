@@ -235,6 +235,7 @@ class CIFAR100_DataModule(pl.LightningDataModule):
 
         cifar_test = [DataLoader(test_dataset, batch_size=100, num_workers=2)
                       for test_dataset in self.cifar_test]
+        print(len(cifar_test))
         return cifar_test
 
 # ==============================================
@@ -293,14 +294,10 @@ class CIFAR100C_DataModule(pl.LightningDataModule):
 
     def test_dataloader(self):
         '''returns test dataloader(s)'''
-<<<<<<< HEAD
-        if isinstance(self.cifar_test, CIFAR100):
-            return DataLoader(self.cifar_test, batch_size=100, num_workers=2, shuffle=False, pin_memory=True)
-        
-=======
+
 #        if isinstance(self.cifar_test, CIFAR100):
 #            return DataLoader(self.cifar_test, batch_size=100, num_workers=2, shuffle=False, pin_memory=True)
->>>>>>> 3090ca2818780d6fb17c6fbe077c5bdd9305244f
+
         cifar_test = []
 
         for corruption in self.corruption:
@@ -309,11 +306,6 @@ class CIFAR100C_DataModule(pl.LightningDataModule):
 
             test = [DataLoader(self.cifar_test, batch_size=100, num_workers=2, shuffle=False, pin_memory=True)]
             cifar_test.append(test)
-<<<<<<< HEAD
-            print(corruption)
 
-        return cifar_test
-=======
             print(corruption + " --- " + str(len(test)))
         return cifar_test
->>>>>>> 3090ca2818780d6fb17c6fbe077c5bdd9305244f
