@@ -13,6 +13,7 @@
 
 # import Libraries
 import os
+import numpy as np
 
 # torch imports
 import torch
@@ -113,7 +114,7 @@ def main():
 
         # training model with resnet
         path = "CIFAR100_checkpoint/resnet-20220303-175848-epoch=60.ckpt"
-        model = PonderCIFAR.load_from_checkpoint(path)
+        model = ResnetCIFAR.load_from_checkpoint(path)
         print(model.hparams)
         
         NAME = 'E-ResNet-ep100' + corruption
