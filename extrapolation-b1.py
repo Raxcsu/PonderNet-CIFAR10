@@ -52,6 +52,7 @@ wandb.login()
 # ==============================================
 
 DATA_DIR = './data'
+BASE_PATH = 'data/CIFAR100-C/CIFAR-100-C/'
 
 # Trainer settings
 BATCH_SIZE = 128
@@ -76,36 +77,14 @@ NUM_CLASSES = 100
 # CIFAR10 SETUP
 # ==============================================
 
-def get_transforms():
-    # define transformations
-    train_transform = transforms.Compose([
-        transforms.RandomCrop(32, padding=4),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-    ])
-    transform_22 = transforms.Compose([
-        transforms.RandomRotation(degrees=22.5),
-        transforms.ToTensor(),
-    ])
-    transform_45 = transforms.Compose([
-        transforms.RandomRotation(degrees=45),
-        transforms.ToTensor(),
-    ])
-    transform_67 = transforms.Compose([
-        transforms.RandomRotation(degrees=67.5),
-        transforms.ToTensor(),
-    ])
-    transform_90 = transforms.Compose([
-        transforms.RandomRotation(degrees=90),
-        transforms.ToTensor(),
-    ])
+CORRUPTIONS = [
+    'gaussian_noise', 'shot_noise', 'impulse_noise', 'defocus_blur',
+    'glass_blur', 'motion_blur', 'zoom_blur', 'snow', 'frost', 'fog',
+    'brightness', 'contrast', 'elastic_transform', 'pixelate',
+    'jpeg_compression'
+]
 
-    train_transform = train_transform
-    test_transform = [transform_22, transform_45, transform_67, transform_90]
-
-    return train_transform, test_transform
-
-train_transform, test_transform = get_transforms()
+test_transform = transforms.Compose([transforms.ToTensor(),])
 
 # ==============================================
 # RUN EXTRAPOLATION
@@ -114,14 +93,6 @@ train_transform, test_transform = get_transforms()
 # Load the CIFAR10 dataset with no rotations and train PonderNet on it.
 # Make sure to edit the `WandbLogger` call so that you log the experiment
 # on your account's desired project.
-
-# initialize datamodule and model
-cifar100_dm = CIFAR100_DataModule(
-    data_dir=DATA_DIR,
-    train_transform=train_transform,
-    test_transform=test_transform,
-    batch_size=BATCH_SIZE)
-
 
 model = PonderCIFAR(
     n_elems=N_ELEMS,
@@ -132,35 +103,52 @@ model = PonderCIFAR(
     lr=LR,
     momentum=MOMENTUM,
     weight_decay=WEIGHT_DECAY)
-'''
-model = ResnetCIFAR(
-    num_classes=NUM_CLASSES,
-    lr=LR,
-    momentum=MOMENTUM,
-    weight_decay=WEIGHT_DECAY)
-'''
-# setup logger
-logger = WandbLogger(project='CIFAR100C - PonderNet', name='E-PonderNet-b1-ep100', offline=False)
-logger.watch(model)
-
-trainer = Trainer(
-    logger=logger,                      # W&B integration
-    gpus=-1,                            # use all available GPU's
-    max_epochs=EPOCHS,                  # maximum number of epochs
-    gradient_clip_val=GRAD_NORM_CLIP,   # gradient clipping
-    val_check_interval=0.25,            # validate 4 times per epoch
-    precision=16,                       # train in half precision
-    deterministic=True)                 # for reproducibility
-
-# fit the model
-#trainer.fit(model, datamodule=cifar100_dm)
 
 # training model with beta = 1
 path = "CIFAR100_checkpoint/pondernet-epoch=74-20220303-094605.ckpt"
 model = PonderCIFAR.load_from_checkpoint(path)
 print(model.hparams)
 
-# evaluate on the test set
-trainer.test(model, datamodule=cifar100_dm)
+def main(argv=None):
 
-wandb.finish()
+    parser = ArgumentParser()
+
+    parser.add_argument(
+        "--corruption",
+        type=str,
+        default='gaussian_noise',
+        help="Choose one of these options. CORRUPTIONS: gaussian_noise, shot_noise, impulse_noise, defocus_blur, glass_blur, motion_blur, zoom_blur, snow, frost, fog, brightness, contrast, elastic_transform, pixelate, jpeg_compression")
+
+    # initialize datamodule and model
+    cifar100_dm = CIFAR100_DataModule(
+        data_dir=DATA_DIR,
+        train_transform=train_transform,
+        test_transform=test_transform,
+        batch_size=BATCH_SIZE)
+
+    NAME = 'E-PonderNet-b1-ep100-' + args.corruption
+    print(NAME)
+
+    # setup logger
+    logger = WandbLogger(project='CIFAR100C - PonderNet', name=NAME, offline=False)
+    logger.watch(model)
+
+    trainer = Trainer(
+        logger=logger,                      # W&B integration
+        gpus=-1,                            # use all available GPU's
+        max_epochs=EPOCHS,                  # maximum number of epochs
+        gradient_clip_val=GRAD_NORM_CLIP,   # gradient clipping
+        val_check_interval=0.25,            # validate 4 times per epoch
+        precision=16,                       # train in half precision
+        deterministic=True)                 # for reproducibility
+
+    # fit the model
+    #trainer.fit(model, datamodule=cifar100_dm)
+
+    # evaluate on the test set
+    trainer.test(model, datamodule=cifar100_dm)
+
+    wandb.finish()
+
+if __name__ == '__main__':
+    main()
