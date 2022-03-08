@@ -139,7 +139,7 @@ def main(argv=None):
         batch_size=BATCH_SIZE,
         base_path=BASE_PATH)
 
-    NAME = 'E-PonderNet-b0.1-ep100-' + args.corruption + '_sv' + args.severity
+    NAME = 'E-PonderNet-b0.1-ep100-' + args.corruption + '_sv' + str(args.severity)
     print(NAME)
 
     # setup logger
