@@ -45,9 +45,6 @@ from math import floor
 # set seeds
 seed_everything(1234)
 
-# log in to wandb
-wandb.login()
-
 # ==============================================
 # CONSTANTS AND HYPERPARAMETERS
 # ==============================================
