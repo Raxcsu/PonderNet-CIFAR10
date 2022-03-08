@@ -387,6 +387,7 @@ class CIFAR100C_SV_DataModule(pl.LightningDataModule):
         self.cifar_test.data = np.load(self.base_path + self.corruption + '.npy')
         self.cifar_test.targets = torch.LongTensor(np.load(self.base_path + 'labels.npy'))
 
+        print("=======================================")
         print("cifar_test_" + self.corruption + ": " + str(len(self.cifar_test)))
 
         tamaño = 10000

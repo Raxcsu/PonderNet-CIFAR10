@@ -110,35 +110,58 @@ path = "CIFAR100_checkpoint/pondernet-epoch=83-20220303-094437.ckpt"
 model = PonderCIFAR.load_from_checkpoint(path)
 print(model.hparams)
 
-# initialize datamodule and model
-cifar100_dm = CIFAR100C_SV_DataModule(
-    corruption='gaussian_noise',
-    severity=1,
-    data_dir=DATA_DIR,
-    test_transform=test_transform,
-    batch_size=BATCH_SIZE,
-    base_path=BASE_PATH)
+def main(argv=None):
 
-NAME = 'E-PonderNet-b0.1-ep100-'
-print(NAME)
+    parser = ArgumentParser()
 
-# setup logger
-logger = WandbLogger(project='test', name=NAME, offline=False)
-logger.watch(model)
+    parser.add_argument(
+        "--corruption",
+        type=str,
+        default='gaussian_noise',
+        help="Choose one of these options. CORRUPTIONS: gaussian_noise, shot_noise, impulse_noise, defocus_blur, glass_blur, motion_blur, zoom_blur, snow, frost, fog, brightness, contrast, elastic_transform, pixelate, jpeg_compression")
 
-trainer = Trainer(
-    logger=logger,                      # W&B integration
-    gpus=-1,                            # use all available GPU's
-    max_epochs=EPOCHS,                  # maximum number of epochs
-    gradient_clip_val=GRAD_NORM_CLIP,   # gradient clipping
-    val_check_interval=0.25,            # validate 4 times per epoch
-    precision=16,                       # train in half precision
-    deterministic=True)                 # for reproducibility
+    parser.add_argument(
+        "--severity",
+        type=int,
+        default='1',
+        help="Severity has a value between 1 to 5")
 
-# evaluate on the test set
-trainer.test(model, datamodule=cifar100_dm)
+    # Parameters
+    args = parser.parse_args(argv)
+    print(args)
 
-wandb.finish()
+    # initialize datamodule and model
+    cifar100_dm = CIFAR100C_SV_DataModule(
+        corruption=args.corruption,
+        severity=args.severity,
+        data_dir=DATA_DIR,
+        test_transform=test_transform,
+        batch_size=BATCH_SIZE,
+        base_path=BASE_PATH)
+
+    NAME = 'E-PonderNet-b0.1-ep100-' + args.corruption + '_sv' + args.severity
+    print(NAME)
+
+    # setup logger
+    logger = WandbLogger(project='test', name=NAME, offline=False)
+    logger.watch(model)
+
+    trainer = Trainer(
+        logger=logger,                      # W&B integration
+        gpus=-1,                            # use all available GPU's
+        max_epochs=EPOCHS,                  # maximum number of epochs
+        gradient_clip_val=GRAD_NORM_CLIP,   # gradient clipping
+        val_check_interval=0.25,            # validate 4 times per epoch
+        precision=16,                       # train in half precision
+        deterministic=True)                 # for reproducibility
+
+    # evaluate on the test set
+    trainer.test(model, datamodule=cifar100_dm)
+
+    wandb.finish()
+
+if __name__ == '__main__':
+    main()
 
 '''
     def test_dataloader(self):
