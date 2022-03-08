@@ -406,6 +406,6 @@ class CIFAR100C_SV_DataModule(pl.LightningDataModule):
 
         cifar_test = [DataLoader(cifar_sv, batch_size=100, num_workers=2, shuffle=False, pin_memory=True)]
 
-        print("cifar_test_" + self.corruption + "_" + self.severity ": " + str(len(cifar_test)))
+        print("cifar_test_" + self.corruption + "_" + self.severity + ": " + str(len(cifar_test)))
 
         return cifar_test
