@@ -218,9 +218,9 @@ class CIFAR100_DataModule(pl.LightningDataModule):
                                         transform=test_transform)
                                     for test_transform in self.test_transform]
 
-        print("cifar_train: " + str(print(len(self.cifar_train))))
-        print("cifar_val: " + str(print(len(self.cifar_val))))
-        print("cifar_test: " + str(print(len(self.cifar_test))))
+        print("cifar_train: " + str(len(self.cifar_train)))
+        print("cifar_val: " + str(len(self.cifar_val)))
+        print("cifar_test: " + str(len(self.cifar_test)))
 
     def train_dataloader(self):
         '''returns training dataloader'''
