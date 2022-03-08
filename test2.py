@@ -112,10 +112,11 @@ print(model.hparams)
 
 # initialize datamodule and model
 cifar100_dm = CIFAR100C_DataModule(
+    corruption='gaussian_noise',
     data_dir=DATA_DIR,
-    train_transform=train_transform,
     test_transform=test_transform,
-    batch_size=BATCH_SIZE)
+    batch_size=BATCH_SIZE,
+    base_path=BASE_PATH)
 
 NAME = 'E-PonderNet-b0.1-ep100-'
 print(NAME)
