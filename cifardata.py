@@ -387,6 +387,25 @@ class CIFAR100C_SV_DataModule(pl.LightningDataModule):
         self.cifar_test.data = np.load(self.base_path + self.corruption + '.npy')
         self.cifar_test.targets = torch.LongTensor(np.load(self.base_path + 'labels.npy'))
 
-        cifar_test = [DataLoader(self.cifar_test, batch_size=100, num_workers=2, shuffle=False, pin_memory=True)]
+        print("cifar_test_" + self.corruption + ": " + str(len(self.cifar_test)))
+
+        cifar_test1, cifar_test2, cifar_test3, cifar_test4, cifar_test5 = Subset(dataset, [10000,10000,10000,10000,10000])
+
+        if self.severity == 1:
+            cifar_sv = cifar_test1
+        elif self.severity == 2:
+            cifar_sv = cifar_test2
+        elif self.severity == 3:
+            cifar_sv = cifar_test3
+        elif self.severity == 4:
+            cifar_sv = cifar_test4
+        elif self.severity == 5:
+            cifar_sv = cifar_test5
+        else:
+            raise ValueError("Input severity does not equal the length of the input dataset!")
+
+        cifar_test = [DataLoader(cifar_sv, batch_size=100, num_workers=2, shuffle=False, pin_memory=True)]
+
+        print("cifar_test_" + self.corruption + "_" + self.severity ": " + str(len(cifar_test)))
 
         return cifar_test

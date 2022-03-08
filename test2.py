@@ -111,8 +111,9 @@ model = PonderCIFAR.load_from_checkpoint(path)
 print(model.hparams)
 
 # initialize datamodule and model
-cifar100_dm = CIFAR100C_DataModule(
+cifar100_dm = CIFAR100C_SV_DataModule(
     corruption='gaussian_noise',
+    severity=1,
     data_dir=DATA_DIR,
     test_transform=test_transform,
     batch_size=BATCH_SIZE,
