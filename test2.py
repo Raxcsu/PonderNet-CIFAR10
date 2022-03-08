@@ -14,6 +14,7 @@
 # import Libraries
 import os
 import numpy as np
+from argparse import ArgumentParser
 
 # torch imports
 import torch
@@ -45,6 +46,9 @@ from math import floor
 # set seeds
 seed_everything(1234)
 
+# log in to wandb
+wandb.login()
+
 # ==============================================
 # CONSTANTS AND HYPERPARAMETERS
 # ==============================================
@@ -53,7 +57,7 @@ DATA_DIR = './data'
 BASE_PATH = 'data/CIFAR100-C/CIFAR-100-C/'
 
 # Trainer settings
-BATCH_SIZE = 100 #128
+BATCH_SIZE = 128
 EPOCHS = 100
 
 # Optimizer settings
@@ -67,53 +71,21 @@ N_ELEMS   = 512
 N_HIDDEN  = 100
 MAX_STEPS = 20
 LAMBDA_P  = 0.1     # 0.2 - 0.4
-BETA      = 1    # 1 see what happen
+BETA      = 0.1    # 1 see what happen
 NUM_CLASSES = 100
 
 
 # ==============================================
-# CIFAR100-C SETUP
+# CIFAR10 SETUP
 # ==============================================
 
-CORRUPTIONS = [
-    'gaussian_noise', 'shot_noise', 'impulse_noise', 'defocus_blur',
-    'glass_blur', 'motion_blur', 'zoom_blur', 'snow', 'frost', 'fog',
-    'brightness', 'contrast', 'elastic_transform', 'pixelate',
-    'jpeg_compression'
-]
+train_transform = transforms.Compose([
+    transforms.RandomCrop(32, padding=4),
+    transforms.RandomHorizontalFlip(),
+    transforms.ToTensor(),
+])
 
 test_transform = transforms.Compose([transforms.ToTensor(),])
-
-def get_transforms():
-    # define transformations
-    train_transform = transforms.Compose([
-        transforms.RandomCrop(32, padding=4),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-    ])
-    transform_22 = transforms.Compose([
-        transforms.RandomRotation(degrees=22.5),
-        transforms.ToTensor(),
-    ])
-    transform_45 = transforms.Compose([
-        transforms.RandomRotation(degrees=45),
-        transforms.ToTensor(),
-    ])
-    transform_67 = transforms.Compose([
-        transforms.RandomRotation(degrees=67.5),
-        transforms.ToTensor(),
-    ])
-    transform_90 = transforms.Compose([
-        transforms.RandomRotation(degrees=90),
-        transforms.ToTensor(),
-    ])
-
-    train_transform = train_transform
-    test_transform = [transform_22, transform_45, transform_67, transform_90]
-
-    return train_transform, test_transform
-
-train_transform, test_transform = get_transforms()
 
 # ==============================================
 # RUN EXTRAPOLATION
@@ -123,18 +95,51 @@ train_transform, test_transform = get_transforms()
 # Make sure to edit the `WandbLogger` call so that you log the experiment
 # on your account's desired project.
 
-model = ResnetCIFAR(
-        num_classes=NUM_CLASSES,
-        lr=LR,
-        momentum=MOMENTUM,
-        weight_decay=WEIGHT_DECAY)
+model = PonderCIFAR(
+    n_elems=N_ELEMS,
+    n_hidden=N_HIDDEN,
+    max_steps=MAX_STEPS,
+    lambda_p=LAMBDA_P,
+    beta=BETA,
+    lr=LR,
+    momentum=MOMENTUM,
+    weight_decay=WEIGHT_DECAY)
 
+# training model with beta = 0.1
+path = "CIFAR100_checkpoint/pondernet-epoch=83-20220303-094437.ckpt"
+model = PonderCIFAR.load_from_checkpoint(path)
+print(model.hparams)
+
+# initialize datamodule and model
 cifar100_dm = CIFAR100_DataModule(
     data_dir=DATA_DIR,
     train_transform=train_transform,
     test_transform=test_transform,
-    batch_size=BATCH_SIZE)    
+    batch_size=BATCH_SIZE)
 
+NAME = 'E-PonderNet-b0.1-ep100-'
+print(NAME)
+
+# setup logger
+logger = WandbLogger(project='test', name=NAME, offline=False)
+logger.watch(model)
+
+trainer = Trainer(
+    logger=logger,                      # W&B integration
+    gpus=-1,                            # use all available GPU's
+    max_epochs=EPOCHS,                  # maximum number of epochs
+    gradient_clip_val=GRAD_NORM_CLIP,   # gradient clipping
+    val_check_interval=0.25,            # validate 4 times per epoch
+    precision=16,                       # train in half precision
+    deterministic=True)                 # for reproducibility
+
+# fit the model
+#trainer.fit(model, datamodule=cifar100_dm)
+
+# evaluate on the test set
+trainer.test(model, datamodule=cifar100_dm)
+
+wandb.finish()
 
 '''
     def test_dataloader(self):
