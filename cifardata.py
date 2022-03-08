@@ -389,23 +389,17 @@ class CIFAR100C_SV_DataModule(pl.LightningDataModule):
 
         print("cifar_test_" + self.corruption + ": " + str(len(self.cifar_test)))
 
-        cifar_test1, cifar_test2, cifar_test3, cifar_test4, cifar_test5 = Subset(self.cifar_test, [10000,10000,10000,10000,10000])
-
-        if self.severity == 1:
-            cifar_sv = cifar_test1
-        elif self.severity == 2:
-            cifar_sv = cifar_test2
-        elif self.severity == 3:
-            cifar_sv = cifar_test3
-        elif self.severity == 4:
-            cifar_sv = cifar_test4
-        elif self.severity == 5:
-            cifar_sv = cifar_test5
-        else:
-            raise ValueError("Input severity does not equal the length of the input dataset!")
+        tamaño = 10000
+        inicio = (self.severity-1)*tamaño
+        final = (self.severity*tamaño)-1
+        tmp = list(range(inicio, final, 1))
+        cifar_sv = Subset(self.cifar_test, tmp)
 
         cifar_test = [DataLoader(cifar_sv, batch_size=100, num_workers=2, shuffle=False, pin_memory=True)]
 
+        print("=======================================")
         print("cifar_test_" + self.corruption + "_" + str(self.severity) + ": " + str(len(cifar_test)))
+        print("inicio: " + str(inicio) + " --- final: " + str(final))
+        print("=======================================")
 
         return cifar_test
