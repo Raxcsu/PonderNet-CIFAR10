@@ -389,7 +389,7 @@ class CIFAR100C_SV_DataModule(pl.LightningDataModule):
 
         print("cifar_test_" + self.corruption + ": " + str(len(self.cifar_test)))
 
-        cifar_test1, cifar_test2, cifar_test3, cifar_test4, cifar_test5 = Subset(dataset, [10000,10000,10000,10000,10000])
+        cifar_test1, cifar_test2, cifar_test3, cifar_test4, cifar_test5 = Subset(self.cifar_test, [10000,10000,10000,10000,10000])
 
         if self.severity == 1:
             cifar_sv = cifar_test1
