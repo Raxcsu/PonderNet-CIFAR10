@@ -293,6 +293,7 @@ class CIFAR100C_DataModule(pl.LightningDataModule):
                                         train=False,
                                         transform=test_transform)
                                     for test_transform in self.test_transform]
+            print("cifar_test: " + str(len(self.cifar_test)))
 
     def test_dataloader(self):
         '''returns test dataloader(s)'''

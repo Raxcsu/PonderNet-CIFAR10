@@ -105,8 +105,13 @@ model = PonderCIFAR(
     momentum=MOMENTUM,
     weight_decay=WEIGHT_DECAY)
 
+# training model with beta = 0.1
+path = "CIFAR100_checkpoint/pondernet-epoch=83-20220303-094437.ckpt"
+model = PonderCIFAR.load_from_checkpoint(path)
+print(model.hparams)
+
 # initialize datamodule and model
-cifar100_dm = CIFAR100_DataModule(
+cifar100_dm = CIFAR100C_DataModule(
     data_dir=DATA_DIR,
     train_transform=train_transform,
     test_transform=test_transform,
@@ -127,9 +132,6 @@ trainer = Trainer(
     val_check_interval=0.25,            # validate 4 times per epoch
     precision=16,                       # train in half precision
     deterministic=True)                 # for reproducibility
-
-# fit the model
-trainer.fit(model, datamodule=cifar100_dm)
 
 # evaluate on the test set
 trainer.test(model, datamodule=cifar100_dm)
