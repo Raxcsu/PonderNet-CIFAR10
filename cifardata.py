@@ -206,6 +206,8 @@ class CIFAR100_DataModule(pl.LightningDataModule):
         if stage in [None, 'fit', 'validate']:
             cifar_full = CIFAR100(self.data_dir, train=True, transform=(self.train_transform or self.default_transform))
             self.cifar_train, self.cifar_val = random_split(cifar_full, [45000, 5000])
+            print("cifar_train: " + str(len(self.cifar_train)))
+            print("cifar_val: " + str(len(self.cifar_val)))
 
         if stage == 'test' or stage is None:
             if self.test_transform is None or isinstance(self.test_transform, transforms.Compose):
@@ -217,10 +219,7 @@ class CIFAR100_DataModule(pl.LightningDataModule):
                                         train=False,
                                         transform=test_transform)
                                     for test_transform in self.test_transform]
-
-        print("cifar_train: " + str(len(self.cifar_train)))
-        print("cifar_val: " + str(len(self.cifar_val)))
-        print("cifar_test: " + str(len(self.cifar_test)))
+            print("cifar_test: " + str(len(self.cifar_test)))
 
     def train_dataloader(self):
         '''returns training dataloader'''
