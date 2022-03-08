@@ -121,23 +121,32 @@ def main(argv=None):
         default='gaussian_noise',
         help="Choose one of these options. CORRUPTIONS: gaussian_noise, shot_noise, impulse_noise, defocus_blur, glass_blur, motion_blur, zoom_blur, snow, frost, fog, brightness, contrast, elastic_transform, pixelate, jpeg_compression")
 
+    parser.add_argument(
+        "--severity",
+        type=int,
+        default='1',
+        help="Severity has a value between 1 to 5")
+
     # Parameters
     args = parser.parse_args(argv)
     print(args)
 
     # initialize datamodule and model
-    cifar100_dm = CIFAR100C_DataModule(
+    cifar100_dm = CIFAR100C_SV_DataModule(
         corruption=args.corruption,
+        severity=args.severity,
         data_dir=DATA_DIR,
         test_transform=test_transform,
         batch_size=BATCH_SIZE,
         base_path=BASE_PATH)
 
-    NAME = 'E-PonderNet-b0.1-ep100-' + args.corruption
+    NAME = 'E-PonderNet-b0.1-ep100-' + args.corruption + '_sv' + str(args.severity)
+    print("=======================================")
     print(NAME)
+    print("=======================================")
 
     # setup logger
-    logger = WandbLogger(project='CIFAR100C', name=NAME, offline=False)
+    logger = WandbLogger(project='CIFARC-SEVERITY', name=NAME, offline=False)
     logger.watch(model)
 
     trainer = Trainer(
@@ -148,9 +157,6 @@ def main(argv=None):
         val_check_interval=0.25,            # validate 4 times per epoch
         precision=16,                       # train in half precision
         deterministic=True)                 # for reproducibility
-
-    # fit the model
-    #trainer.fit(model, datamodule=cifar100_dm)
 
     # evaluate on the test set
     trainer.test(model, datamodule=cifar100_dm)
