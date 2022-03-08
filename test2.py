@@ -46,7 +46,6 @@ from math import floor
 seed_everything(1234)
 
 # log in to wandb
-wandb.login()
 
 # ==============================================
 # CONSTANTS AND HYPERPARAMETERS
@@ -138,6 +137,14 @@ cifar100_dm = CIFAR100_DataModule(
     test_transform=test_transform,
     batch_size=BATCH_SIZE)    
 
+trainer = Trainer(
+        logger=logger,                      # W&B integration
+        gpus=-1,                            # use all available GPU's
+        max_epochs=EPOCHS,                  # maximum number of epochs
+        gradient_clip_val=GRAD_NORM_CLIP,   # gradient clipping
+        val_check_interval=0.25,            # validate 4 times per epoch
+        precision=16,                       # train in half precision
+        deterministic=True)                 # for reproducibility
 
 '''
     def test_dataloader(self):
