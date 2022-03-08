@@ -6,8 +6,14 @@ CORRUPTIONS=(
     'brightness' 'contrast' 'elastic_transform' 'pixelate'
     'jpeg_compression')
 
+SEVERITY=(1 2 3 4 5)
+
 for corruption in ${CORRUPTIONS[@]}
 do
-    CUDA_VISIBLE_DEVICES=4 python extrapolation-b1.py \
-        --corruption $corruption
+    for severity in ${SEVERITY[@]}
+    do
+        CUDA_VISIBLE_DEVICES=3 python extrapolation-b1.py \
+            --corruption $corruption \
+            --severity $severity
+    done
 done
