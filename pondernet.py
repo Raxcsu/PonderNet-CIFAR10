@@ -467,10 +467,11 @@ class PonderCIFAR(pl.LightningModule):
             preds : torch.Tensor
                 Predictions for the current batch.
         '''
-        loss, preds, acc, steps = self._get_loss_and_metrics(batch)
+        loss, preds, acc, steps, step_b = self._get_loss_and_metrics(batch)
 
         # logging
         self.log('val/steps', steps)
+        self.log('val/total_step', step_b)
         self.log('val/accuracy', acc)
         self.log('val/total_loss', loss.get_total_loss())
         self.log('val/reconstruction_loss', loss.get_rec_loss())
