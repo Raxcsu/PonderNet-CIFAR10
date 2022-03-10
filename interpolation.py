@@ -57,7 +57,7 @@ wandb.login()
 # Make sure to edit the `WandbLogger` call so that you log the experiment
 # on your account's desired project.
 
-def main():
+def main(argv=None):
 
     parser = ArgumentParser(description='PyTorch CIFAR100C Training')
 
