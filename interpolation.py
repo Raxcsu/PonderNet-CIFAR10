@@ -85,6 +85,10 @@ def main():
         default=0.1,
         help="Lambda_p has a default value = 0.1")
 
+    # Parameters
+    args = parser.parse_args(argv)
+    print(args)
+
     # ==============================================
     # CONSTANTS AND HYPERPARAMETERS
     # ==============================================
