@@ -143,15 +143,14 @@ def main(argv=None):
             beta=BETA,
             lr=LR,
             momentum=MOMENTUM,
-            weight_decay=WEIGHT_DECAY,
-            epochs=EPOCHS)
+            weight_decay=WEIGHT_DECAY)
+
     elif args.model == 'resnet':
         model = ResnetCIFAR(
             num_classes=N_CLASSES,
             lr=LR,
             momentum=MOMENTUM,
-            weight_decay=WEIGHT_DECAY,
-            epochs=EPOCHS)
+            weight_decay=WEIGHT_DECAY)
     else:
         print("Model not found")
 
