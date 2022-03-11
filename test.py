@@ -289,10 +289,17 @@ print(model.hparams)
 # 'pondernet-ep94-lp01-b008-20220311-013913.ckpt'
 
 print("-------------------------------------")
-path = 'CIFAR100_checkpoint/resnet-20220303-175848-epoch=60.ckpt'
+path = 'CIFAR100_checkpoint/resnet-ep60-20220303-175848.ckpt'
 model = ResnetCIFAR.load_from_checkpoint(path)
 print(path)
 print(model.hparams)
+'''
+"lr":           0.1
+"momentum":     0.9
+"num_classes":  100
+"weight_decay": 0.0005
+'''
+# resnet-ep60-20220303-175848.ckpt
 
 # prints the learning_rate you used in this checkpoint
 

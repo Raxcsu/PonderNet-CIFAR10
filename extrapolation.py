@@ -50,45 +50,6 @@ seed_everything(1234)
 wandb.login()
 
 # ==============================================
-# CONSTANTS AND HYPERPARAMETERS
-# ==============================================
-
-DATA_DIR = './data'
-BASE_PATH = 'data/CIFAR100-C/CIFAR-100-C/'
-
-# Trainer settings
-BATCH_SIZE = 128
-EPOCHS = 100
-
-# Optimizer settings
-LR = 0.1        # 0.001ADAM
-GRAD_NORM_CLIP = 0.5
-MOMENTUM = 0.9
-WEIGHT_DECAY = 5e-4
-
-# Model hparams
-N_ELEMS   = 512
-N_HIDDEN  = 100
-MAX_STEPS = 20
-LAMBDA_P  = 0.1     # 0.2 - 0.4
-BETA      = 0.1    # 1 see what happen
-NUM_CLASSES = 100
-
-
-# ==============================================
-# CIFAR10 SETUP
-# ==============================================
-
-CORRUPTIONS = [
-    'gaussian_noise', 'shot_noise', 'impulse_noise', 'defocus_blur',
-    'glass_blur', 'motion_blur', 'zoom_blur', 'snow', 'frost', 'fog',
-    'brightness', 'contrast', 'elastic_transform', 'pixelate',
-    'jpeg_compression'
-]
-
-test_transform = transforms.Compose([transforms.ToTensor(),])
-
-# ==============================================
 # RUN EXTRAPOLATION
 # ==============================================
 
@@ -96,24 +57,33 @@ test_transform = transforms.Compose([transforms.ToTensor(),])
 # Make sure to edit the `WandbLogger` call so that you log the experiment
 # on your account's desired project.
 
-model = PonderCIFAR(
-    n_elems=N_ELEMS,
-    n_hidden=N_HIDDEN,
-    max_steps=MAX_STEPS,
-    lambda_p=LAMBDA_P,
-    beta=BETA,
-    lr=LR,
-    momentum=MOMENTUM,
-    weight_decay=WEIGHT_DECAY)
-
-# training model with beta = 0.1
-path = "CIFAR100_checkpoint/pondernet-epoch=83-20220303-094437.ckpt"
-model = PonderCIFAR.load_from_checkpoint(path)
-print(model.hparams)
-
 def main(argv=None):
 
-    parser = ArgumentParser()
+    parser = ArgumentParser(description='PyTorch CIFAR100C Testing')
+
+    parser.add_argument(
+        "--model",
+        type=str,
+        default='pondernet',
+        help="Choose 'pondernet' or 'resnet' model")
+
+    parser.add_argument(
+        "--epochs",
+        type=int,
+        default=100,
+        help="Epochs has a default value = 100")
+
+    parser.add_argument(
+        "--beta",
+        type=float,
+        default=0.1,
+        help="Beta has a default value = 0.1")
+
+    parser.add_argument(
+        "--lambda_p",
+        type=float,
+        default=0.1,
+        help="Lambda_p has a default value = 0.1")
 
     parser.add_argument(
         "--corruption",
@@ -124,12 +94,102 @@ def main(argv=None):
     parser.add_argument(
         "--severity",
         type=int,
-        default='1',
+        default=1,
         help="Severity has a value between 1 to 5")
 
     # Parameters
     args = parser.parse_args(argv)
     print(args)
+
+    # ==============================================
+    # CONSTANTS AND HYPERPARAMETERS
+    # ==============================================
+
+    DATA_DIR = './data'
+    BASE_PATH = 'data/CIFAR100-C/CIFAR-100-C/'
+
+    # Trainer settings
+    BATCH_SIZE = 128
+    EPOCHS = args.epochs
+
+    # Optimizer settings
+    LR = 0.1        # 0.001ADAM
+    GRAD_NORM_CLIP = 0.5
+    MOMENTUM = 0.9
+    WEIGHT_DECAY = 5e-4
+
+    # Model hparams
+    N_ELEMS   = 512
+    N_HIDDEN  = 100
+    MAX_STEPS = 20
+    LAMBDA_P  = args.lambda_p       # default lambda_p = 0.1
+    BETA      = args.beta           # default beta = 0.1
+    NUM_CLASSES = 100
+
+    if args.model == 'pondernet':
+        model = PonderCIFAR(
+            n_elems=N_ELEMS,
+            n_hidden=N_HIDDEN,
+            max_steps=MAX_STEPS,
+            lambda_p=LAMBDA_P,
+            beta=BETA,
+            lr=LR,
+            momentum=MOMENTUM,
+            weight_decay=WEIGHT_DECAY)
+        # training model with beta = 0.1
+        if BETA == 0.1:
+            tmp = 'pondernet-ep83-lp01-b01-20220303-094437.ckpt'
+        elif BETA == 1:
+            tmp = 'pondernet-ep74-lp01-b1-20220303-094605.ckpt'
+        elif BETA == 0.01:
+            tmp = 'pondernet-ep79-lp01-b001-20220311-013555.ckpt'
+        elif BETA == 0.02:
+            tmp = 'pondernet-ep92-lp01-b002-20220311-013623.ckpt'
+        elif BETA == 0.03:
+            tmp = 'pondernet-ep84-lp01-b003-20220311-013733.ckpt'
+        elif BETA == 0.04:
+            tmp = 'pondernet-ep72-lp01-b004-20220311-013746.ckpt'
+        elif BETA == 0.05:
+            tmp = 'pondernet-ep75-lp01-b005-20220311-013804.ckpt'
+        elif BETA == 0.06:
+            tmp = 'pondernet-ep85-lp01-b006-20220311-013845.ckpt'
+        elif BETA == 0.07:
+            tmp = 'pondernet-ep91-lp01-b007-20220311-013902.ckpt'
+        elif BETA == 0.08:
+            tmp = 'pondernet-ep94-lp01-b008-20220311-013913.ckpt'
+        else:
+            print("Model not found")
+            break()
+
+        path = 'CIFAR100_checkpoint/' + tmp
+        model = PonderCIFAR.load_from_checkpoint(path)
+    elif args.model == 'resnet':
+        model = ResnetCIFAR(
+            num_classes=N_CLASSES,
+            lr=LR,
+            momentum=MOMENTUM,
+            weight_decay=WEIGHT_DECAY)
+        path = 'CIFAR100_checkpoint/resnet-ep60-20220303-175848.ckpt'
+        model = ResnetCIFAR.load_from_checkpoint(path)
+    else:
+        print("Model not found")
+        break()
+    
+    print(model.hparams)
+
+
+    # ==============================================
+    # CIFAR10 SETUP
+    # ==============================================
+
+    CORRUPTIONS = [
+        'gaussian_noise', 'shot_noise', 'impulse_noise', 'defocus_blur',
+        'glass_blur', 'motion_blur', 'zoom_blur', 'snow', 'frost', 'fog',
+        'brightness', 'contrast', 'elastic_transform', 'pixelate',
+        'jpeg_compression'
+    ]
+
+    test_transform = transforms.Compose([transforms.ToTensor(),])
 
     # initialize datamodule and model
     cifar100_dm = CIFAR100C_SV_DataModule(
