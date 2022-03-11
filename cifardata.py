@@ -411,6 +411,7 @@ class CIFAR100C_SV_DataModule(pl.LightningDataModule):
             cifar = [Subset(cifar_sv, tmp)]
             
             print("---------------------------------------")
+            print(type(cifar))
             print("inicio: " + str(inicio) + " --- final: " + str(final))
             print("---------------------------------------")
             
