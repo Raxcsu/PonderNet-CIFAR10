@@ -595,4 +595,4 @@ class PonderCIFAR(pl.LightningModule):
         # calculate the average number of steps
         steps = (halted_step * 1.0).mean()
 
-        return loss, preds, acc, steps, step_b
+        return loss, preds, acc, steps
