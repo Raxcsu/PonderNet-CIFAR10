@@ -154,7 +154,6 @@ def main(argv=None):
         
     else:
         print("Model not found")
-        break
 
     NAME = 'I-' + args.model + '-ep' +  str(args.epochs) + '-lp' + str(args.lambda_p) + '-b' + str(args.beta)
     print("=======================================")
