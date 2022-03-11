@@ -119,7 +119,7 @@ model = ResnetCIFAR(
     epochs=EPOCHS)
 '''
 print("-------------------------------------")
-path = 'CIFAR100_checkpoint/pondernet-epoch=74-20220303-094605.ckpt'
+path = 'CIFAR100_checkpoint/pondernet-ep74-lp01-b1-20220303-094605.ckpt'
 model = PonderCIFAR.load_from_checkpoint(path)
 print(path)
 print(model.hparams)
@@ -136,7 +136,7 @@ print(model.hparams)
 # 'pondernet-ep74-lp01-b1-20220303-094605.ckpt'
 
 print("-------------------------------------")
-path = 'CIFAR100_checkpoint/pondernet-epoch=83-20220303-094437.ckpt'
+path = 'CIFAR100_checkpoint/pondernet-ep83-lp01-b01-20220303-094437.ckpt'
 model = PonderCIFAR.load_from_checkpoint(path)
 print(path)
 print(model.hparams)
@@ -153,7 +153,7 @@ print(model.hparams)
 # 'pondernet-ep83-lp01-b01-20220303-094437.ckpt'
 
 print("-------------------------------------")
-path = 'CIFAR100_checkpoint/pondernet-20220311-013555-epoch=79.ckpt'
+path = 'CIFAR100_checkpoint/pondernet-ep79-lp01-b001-20220311-013555.ckpt'
 model = PonderCIFAR.load_from_checkpoint(path)
 print(path)
 print(model.hparams)
@@ -170,7 +170,7 @@ print(model.hparams)
 # 'pondernet-ep79-lp01-b001-20220311-013555.ckpt'
 
 print("-------------------------------------")
-path = 'CIFAR100_checkpoint/pondernet-20220311-013623-epoch=92.ckpt'
+path = 'CIFAR100_checkpoint/pondernet-ep92-lp01-b002-20220311-013623.ckpt'
 model = PonderCIFAR.load_from_checkpoint(path)
 print(path)
 print(model.hparams)
@@ -187,7 +187,7 @@ print(model.hparams)
 # 'pondernet-ep92-lp01-b002-20220311-013623.ckpt'
 
 print("-------------------------------------")
-path = 'CIFAR100_checkpoint/pondernet-20220311-013733-epoch=84.ckpt'
+path = 'CIFAR100_checkpoint/pondernet-ep84-lp01-b003-20220311-013733.ckpt'
 model = PonderCIFAR.load_from_checkpoint(path)
 print(path)
 print(model.hparams)
@@ -204,7 +204,7 @@ print(model.hparams)
 # 'pondernet-ep84-lp01-b003-20220311-013733.ckpt'
 
 print("-------------------------------------")
-path = 'CIFAR100_checkpoint/pondernet-20220311-013746-epoch=72.ckpt'
+path = 'CIFAR100_checkpoint/pondernet-ep72-lp01-b004-20220311-013746.ckpt'
 model = PonderCIFAR.load_from_checkpoint(path)
 print(path)
 print(model.hparams)
@@ -221,7 +221,7 @@ print(model.hparams)
 # 'pondernet-ep72-lp01-b004-20220311-013746.ckpt'
 
 print("-------------------------------------")
-path = 'CIFAR100_checkpoint/pondernet-20220311-013804-epoch=75.ckpt'
+path = 'CIFAR100_checkpoint/pondernet-ep75-lp01-b005-20220311-013804.ckpt'
 model = PonderCIFAR.load_from_checkpoint(path)
 print(path)
 print(model.hparams)
@@ -238,7 +238,7 @@ print(model.hparams)
 # 'pondernet-ep75-lp01-b005-20220311-013804.ckpt'
 
 print("-------------------------------------")
-path = 'CIFAR100_checkpoint/pondernet-20220311-013845-epoch=85.ckpt'
+path = 'CIFAR100_checkpoint/pondernet-ep85-lp01-b006-20220311-013845.ckpt'
 model = PonderCIFAR.load_from_checkpoint(path)
 print(path)
 print(model.hparams)
@@ -255,7 +255,7 @@ print(model.hparams)
 # 'pondernet-ep85-lp01-b006-20220311-013845.ckpt'
 
 print("-------------------------------------")
-path = 'CIFAR100_checkpoint/pondernet-20220311-013902-epoch=91.ckpt'
+path = 'CIFAR100_checkpoint/pondernet-ep91-lp01-b007-20220311-013902.ckpt'
 model = PonderCIFAR.load_from_checkpoint(path)
 print(path)
 print(model.hparams)
@@ -272,7 +272,7 @@ print(model.hparams)
 # 'pondernet-ep91-lp01-b007-20220311-013902.ckpt'
 
 print("-------------------------------------")
-path = 'CIFAR100_checkpoint/pondernet-20220311-013913-epoch=94.ckpt'
+path = 'CIFAR100_checkpoint/pondernet-ep94-lp01-b008-20220311-013913.ckpt'
 model = PonderCIFAR.load_from_checkpoint(path)
 print(path)
 print(model.hparams)
