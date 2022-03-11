@@ -396,7 +396,7 @@ class CIFAR100C_SV_DataModule(pl.LightningDataModule):
         tmp = list(range(inicio, final, 1))
         cifar_sv = Subset(self.cifar_test, tmp)
 
-        cifar_test = [DataLoader(cifar_sv, batch_size=50, num_workers=2, shuffle=False, pin_memory=True)]
+        cifar_test = [DataLoader(cifar_sv, batch_size=100, num_workers=2, shuffle=False, pin_memory=True)]
 
         print("=======================================")
         print("cifar_test_" + self.corruption + "_sv" + str(self.severity) + ": " + str(len(cifar_test)))
