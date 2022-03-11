@@ -441,11 +441,10 @@ class PonderCIFAR(pl.LightningModule):
             loss : torch.Tensor
                 Loss value of the current batch.
         '''
-        loss, _, acc, steps, step_b = self._get_loss_and_metrics(batch)
+        loss, _, acc, steps = self._get_loss_and_metrics(batch)
 
         # logging
         self.log('train/steps', steps)
-        self.log('train/total_step', step_b)
         self.log('train/accuracy', acc)
         self.log('train/total_loss', loss.get_total_loss())
         self.log('train/reconstruction_loss', loss.get_rec_loss())
@@ -468,11 +467,10 @@ class PonderCIFAR(pl.LightningModule):
             preds : torch.Tensor
                 Predictions for the current batch.
         '''
-        loss, preds, acc, steps, step_b = self._get_loss_and_metrics(batch)
+        loss, preds, acc, steps = self._get_loss_and_metrics(batch)
 
         # logging
         self.log('val/steps', steps)
-        self.log('val/total_step', step_b)
         self.log('val/accuracy', acc)
         self.log('val/total_loss', loss.get_total_loss())
         self.log('val/reconstruction_loss', loss.get_rec_loss())
@@ -498,11 +496,10 @@ class PonderCIFAR(pl.LightningModule):
             steps : torch.Tensor
                 Average number of steps for the current batch.
         '''
-        loss, _, acc, steps, step_b = self._get_loss_and_metrics(batch)
+        loss, _, acc, steps = self._get_loss_and_metrics(batch)
 
         # logging
         self.log(f'test_{dataset_idx}/steps', steps)
-        self.log(f'test_{dataset_idx}/step_b', step_b)
         self.log(f'test_{dataset_idx}/acc', acc)
         self.log(f'test_{dataset_idx}/total_loss', loss.get_total_loss())
 
@@ -596,7 +593,6 @@ class PonderCIFAR(pl.LightningModule):
         acc = self.accuracy(preds, target)
 
         # calculate the average number of steps
-        step_b = (halted_step * 1.0) 
         steps = (halted_step * 1.0).mean()
 
         return loss, preds, acc, steps, step_b
