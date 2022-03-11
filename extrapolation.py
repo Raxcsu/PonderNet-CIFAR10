@@ -159,7 +159,7 @@ def main(argv=None):
             tmp = 'pondernet-ep94-lp01-b008-20220311-013913.ckpt'
         else:
             print("Model not found")
-            break()
+            break
 
         path = 'CIFAR100_checkpoint/' + tmp
         model = PonderCIFAR.load_from_checkpoint(path)
@@ -173,7 +173,7 @@ def main(argv=None):
         model = ResnetCIFAR.load_from_checkpoint(path)
     else:
         print("Model not found")
-        break()
+        break
     
     print(model.hparams)
 
