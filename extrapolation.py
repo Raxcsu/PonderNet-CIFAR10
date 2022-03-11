@@ -218,8 +218,7 @@ def main(argv=None):
         data_dir=DATA_DIR,
         test_transform=test_transform,
         batch_size=BATCH_SIZE,
-        base_path=BASE_PATH,
-        iteration=i)
+        base_path=BASE_PATH)
 
     # evaluate on the test set
     trainer.test(model, datamodule=cifar100_dm, verbose=True)
