@@ -405,8 +405,8 @@ class CIFAR100C_SV_DataModule(pl.LightningDataModule):
 
         for i in range(100):
             tamaño = 10
-            inicio = (i-1)*tamaño
-            final = (i*tamaño)-1
+            inicio = (i)*tamaño
+            final = ((i-1)*tamaño)-1
             tmp = list(range(inicio, final, 1))
             cifar = [Subset(cifar_sv, tmp)]
             
