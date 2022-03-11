@@ -109,7 +109,7 @@ print(model.hparams)
 
 def main(argv=None):
 
-    parser = ArgumentParser()
+    parser = ArgumentParser(description='PyTorch CIFAR100C Testing')
 
     parser.add_argument(
         "--corruption",
