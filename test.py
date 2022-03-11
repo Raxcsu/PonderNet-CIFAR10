@@ -118,17 +118,72 @@ model = ResnetCIFAR(
     weight_decay=WEIGHT_DECAY,
     epochs=EPOCHS)
 '''
-'pondernet-epoch=74-20220303-094605.ckpt'  'pondernet-epoch=83-20220303-094437.ckpt'
-path1 = "CIFAR100_checkpoint/pondernet-epoch=74-20220303-094605.ckpt"
-path2 = "CIFAR100_checkpoint/pondernet-epoch=83-20220303-094437.ckpt"
-
-model = PonderCIFAR.load_from_checkpoint(path1)
+print("-------------------------------------")
+path = 'CIFAR100_checkpoint/pondernet-epoch=74-20220303-094605.ckpt'
+model = PonderCIFAR.load_from_checkpoint(path)
+print(path)
 print(model.hparams)
 
 print("-------------------------------------")
-
-model = PonderCIFAR.load_from_checkpoint(path2)
+path = 'CIFAR100_checkpoint/pondernet-epoch=83-20220303-094437.ckpt'
+model = PonderCIFAR.load_from_checkpoint(path)
+print(path)
 print(model.hparams)
+
+print("-------------------------------------")
+path = 'CIFAR100_checkpoint/pondernet-20220311-001059-epoch=09.ckpt'
+model = PonderCIFAR.load_from_checkpoint(path)
+print(path)
+print(model.hparams)
+
+print("-------------------------------------")
+path = 'CIFAR100_checkpoint/pondernet-20220311-013555-epoch=79.ckpt'
+model = PonderCIFAR.load_from_checkpoint(path)
+print(path)
+print(model.hparams)
+
+print("-------------------------------------")
+path = 'CIFAR100_checkpoint/pondernet-20220311-013623-epoch=92.ckpt'
+model = PonderCIFAR.load_from_checkpoint(path)
+print(path)
+print(model.hparams)
+
+print("-------------------------------------")
+path = 'CIFAR100_checkpoint/pondernet-20220311-013733-epoch=84.ckpt'
+model = PonderCIFAR.load_from_checkpoint(path)
+print(path)
+print(model.hparams)
+
+print("-------------------------------------")
+path = 'CIFAR100_checkpoint/pondernet-20220311-013746-epoch=72.ckpt'
+model = PonderCIFAR.load_from_checkpoint(path)
+print(path)
+print(model.hparams)
+
+print("-------------------------------------")
+path = 'CIFAR100_checkpoint/pondernet-20220311-013804-epoch=75.ckpt'
+model = PonderCIFAR.load_from_checkpoint(path)
+print(path)
+print(model.hparams)
+
+print("-------------------------------------")
+path = 'CIFAR100_checkpoint/pondernet-20220311-013845-epoch=85.ckpt'
+model = PonderCIFAR.load_from_checkpoint(path)
+print(path)
+print(model.hparams)
+
+print("-------------------------------------")
+path = 'CIFAR100_checkpoint/pondernet-20220311-013902-epoch=91.ckpt'
+model = PonderCIFAR.load_from_checkpoint(path)
+print(path)
+print(model.hparams)
+
+print("-------------------------------------")
+path = 'CIFAR100_checkpoint/pondernet-20220311-013913-epoch=94.ckpt'
+model = PonderCIFAR.load_from_checkpoint(path)
+print(path)
+print(model.hparams)
+
 
 # prints the learning_rate you used in this checkpoint
 
