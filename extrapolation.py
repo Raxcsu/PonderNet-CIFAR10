@@ -177,7 +177,7 @@ def main(argv=None):
 
 
     # ==============================================
-    # CIFAR10 SETUP
+    # CIFAR100-C SETUP
     # ==============================================
 
     CORRUPTIONS = [
@@ -189,14 +189,9 @@ def main(argv=None):
 
     test_transform = transforms.Compose([transforms.ToTensor(),])
 
-    # initialize datamodule and model
-    cifar100_dm = CIFAR100C_SV_DataModule(
-        corruption=args.corruption,
-        severity=args.severity,
-        data_dir=DATA_DIR,
-        test_transform=test_transform,
-        batch_size=BATCH_SIZE,
-        base_path=BASE_PATH)
+    # ==============================================
+    # MODEL
+    # ==============================================
 
     NAME = 'E-PonderNet-b0.1-ep100-' + args.corruption + '_sv' + str(args.severity)
     print("=======================================")
@@ -216,8 +211,18 @@ def main(argv=None):
         precision=16,                       # train in half precision
         deterministic=True)                 # for reproducibility
 
+    # initialize datamodule and model
+    cifar100_dm = CIFAR100C_SV_DataModule(
+        corruption=args.corruption,
+        severity=args.severity,
+        data_dir=DATA_DIR,
+        test_transform=test_transform,
+        batch_size=BATCH_SIZE,
+        base_path=BASE_PATH,
+        iteration=i)
+
     # evaluate on the test set
-    trainer.test(model, datamodule=cifar100_dm)
+    trainer.test(model, datamodule=cifar100_dm, verbose=True)
 
     wandb.finish()
 

@@ -499,14 +499,9 @@ class PonderCIFAR(pl.LightningModule):
         loss, _, acc, steps = self._get_loss_and_metrics(batch)
 
         # logging
-        '''
         self.log(f'test_{dataset_idx}/steps', steps)
         self.log(f'test_{dataset_idx}/acc', acc)
         self.log(f'test_{dataset_idx}/total_loss', loss.get_total_loss())
-        '''
-        self.log('test/steps', steps)
-        self.log('test/acc', acc)
-        self.log('test/total_loss', loss.get_total_loss())
 
         # for custom callback
         return acc, steps
