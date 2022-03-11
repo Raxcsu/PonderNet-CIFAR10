@@ -398,12 +398,12 @@ class CIFAR100C_SV_DataModule(pl.LightningDataModule):
 
         cifar_test = [DataLoader(cifar_sv, batch_size=100, num_workers=2, shuffle=False, pin_memory=True)]
 
-        '''
         print("=======================================")
-        print("cifar_test_" + self.corruption + "_sv" + str(self.severity) + ": " + str(len(cifar_sv)))
+        print("cifar_test_" + self.corruption + "_sv" + str(self.severity) + ": " + str(len(cifar_test)))
         print("inicio: " + str(inicio) + " --- final: " + str(final))
         print("=======================================")
 
+        '''
         for i in range(100):
             tamaño = 10
             inicio = (i)*tamaño
@@ -418,6 +418,5 @@ class CIFAR100C_SV_DataModule(pl.LightningDataModule):
             
             cifar_test = [DataLoader(cifar, batch_size=1, num_workers=2, shuffle=False, pin_memory=True)]
         '''
-        
 
         return cifar_test

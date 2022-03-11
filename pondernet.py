@@ -480,7 +480,7 @@ class PonderCIFAR(pl.LightningModule):
         return preds
 
     #def test_step(self, batch, batch_idx, dataset_idx=0):
-    def test_step(self, batch, batch_idx):
+    def test_step(self, batch, batch_idx, dataset_idx=0):
         '''
             Perform the test step. Returns relevant metrics.
 
@@ -500,9 +500,9 @@ class PonderCIFAR(pl.LightningModule):
         loss, _, acc, steps = self._get_loss_and_metrics(batch)
 
         # logging
-        self.log('test_0/steps', steps)
-        self.log('test_0/acc', acc)
-        self.log('test_0/total_loss', loss.get_total_loss())
+        self.log(f'test_{dataset_idx}/steps', steps)
+        self.log(f'test_{dataset_idx}/acc', acc)
+        self.log(f'test_{dataset_idx}/total_loss', loss.get_total_loss())
 
         # for custom callback
         return acc, steps
@@ -595,5 +595,7 @@ class PonderCIFAR(pl.LightningModule):
 
         # calculate the average number of steps
         steps = (halted_step * 1.0).mean()
+
+        self.log('test/total_steps', steps)
 
         return loss, preds, acc, steps
