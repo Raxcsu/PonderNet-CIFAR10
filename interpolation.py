@@ -128,7 +128,7 @@ def main(argv=None):
     ])
 
     # initialize datamodule and model
-    cifar100_dm = CIFAR100_DataModule(
+    cifar100_dm = CIFAR10_DataModule(
         data_dir=DATA_DIR,
         train_transform=train_transform,
         test_transform=test_transform,
@@ -161,7 +161,7 @@ def main(argv=None):
     print("=======================================")
 
     # setup logger
-    logger = WandbLogger(project='PonderNet - CIFAR100', name=NAME, offline=False)
+    logger = WandbLogger(project='PonderNet - Interpolation', name=NAME, offline=False)
     logger.watch(model)
 
     trainer = Trainer(

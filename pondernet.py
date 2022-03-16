@@ -537,7 +537,7 @@ class PonderCIFAR(pl.LightningModule):
                                        patience=100)
 
         timestr = time.strftime("%Y%m%d-%H%M%S")
-        model_checkpoint = ModelCheckpoint(dirpath ='CIFAR100_checkpoint/',
+        model_checkpoint = ModelCheckpoint(dirpath ='INTERPOLATION_checkpoint/',
                                            monitor ="val/accuracy",
                                            filename="pondernet-" + timestr + "-{epoch:02d}",
                                            mode    ='max')
@@ -595,7 +595,5 @@ class PonderCIFAR(pl.LightningModule):
 
         # calculate the average number of steps
         steps = (halted_step * 1.0).mean()
-
-        self.log('test/total_steps', steps)
 
         return loss, preds, acc, steps

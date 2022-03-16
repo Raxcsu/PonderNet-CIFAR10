@@ -209,7 +209,8 @@ def main(argv=None):
         gradient_clip_val=GRAD_NORM_CLIP,   # gradient clipping
         val_check_interval=0.25,            # validate 4 times per epoch
         precision=16,                       # train in half precision
-        deterministic=True)                 # for reproducibility
+        deterministic=True,                 # for reproducibility
+        progress_bar_refresh_rate=0)
 
     # initialize datamodule and model
     cifar100_dm = CIFAR100C_SV_DataModule(
@@ -227,3 +228,7 @@ def main(argv=None):
 
 if __name__ == '__main__':
     main()
+
+
+    #scp -r oscar@10.28.3.155:/home/oscar/PonderNet-CIFAR10/wandb/ home/o
+    # https://github.com/PyTorchLightning/pytorch-lightning/issues/1859
