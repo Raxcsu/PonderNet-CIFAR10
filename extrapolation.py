@@ -209,8 +209,7 @@ def main(argv=None):
         gradient_clip_val=GRAD_NORM_CLIP,   # gradient clipping
         val_check_interval=0.25,            # validate 4 times per epoch
         precision=16,                       # train in half precision
-        deterministic=True,                 # for reproducibility
-        progress_bar_refresh_rate=0)
+        deterministic=True)                 # for reproducibility
 
     # initialize datamodule and model
     cifar100_dm = CIFAR100C_SV_DataModule(
