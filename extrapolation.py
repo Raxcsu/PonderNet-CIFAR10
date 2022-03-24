@@ -76,7 +76,7 @@ def main(argv=None):
     parser.add_argument(
         "--beta",
         type=float,
-        default=0.1,
+        default=0.05,
         help="Beta has a default value = 0.1")
 
     parser.add_argument(
