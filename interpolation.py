@@ -59,7 +59,7 @@ wandb.login()
 
 def main(argv=None):
 
-    parser = ArgumentParser(description='PyTorch CIFAR100C Training')
+    parser = ArgumentParser(description='PyTorch CIFAR100 Training')
 
     parser.add_argument(
         "--model",
@@ -128,7 +128,7 @@ def main(argv=None):
     ])
 
     # initialize datamodule and model
-    cifar100_dm = CIFAR10_DataModule(
+    cifar100_dm = CIFAR100_DataModule(
         data_dir=DATA_DIR,
         train_transform=train_transform,
         test_transform=test_transform,
