@@ -193,7 +193,7 @@ def main(argv=None):
     # MODEL
     # ==============================================
 
-    NAME = 'E-PonderNet-b0.1-ep100-' + args.corruption + '_sv' + str(args.severity)
+    NAME = 'E-PonderNet-b' + str(BETA) + '-ep' + str(EPOCHS) + '-' + args.corruption + '_sv' + str(args.severity)
     print("=======================================")
     print(NAME)
     print("=======================================")
