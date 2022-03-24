@@ -6,7 +6,7 @@ CORRUPTIONS=(
     'brightness' 'contrast' 'elastic_transform' 'pixelate'
     'jpeg_compression')
 
-SEVERITY=(1 2 3 4 5)
+SEVERITY=(1 3 5)
 
 for corruption in ${CORRUPTIONS[@]}
 do
